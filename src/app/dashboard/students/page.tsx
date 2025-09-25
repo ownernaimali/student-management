@@ -1,3 +1,4 @@
+"use client"
 import {
   Card,
   CardContent,
@@ -7,6 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link"
+import { useState, useEffect } from "react"
 
 // Sample data for classes 1–10
 const attendanceByClass = [
@@ -21,21 +23,41 @@ const attendanceByClass = [
   { className: "Class 9", present: 23, absent: 3 },
   { className: "Class 10", present: 28, absent: 2 },
 ];
+ 
+export default function StudentDashboardPage() {
+const [totalStudents, setTotalStudents] = useState<number>(0);
+  // const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const totalStudentsLength = async () => {
+      try {
+        const res = await fetch("http:localhost:3001/api/totals/students");
+        if (!res.ok) {
+          throw new Error("Failed to fetch total students");
+        }
+        const data = await res.json();
+        setTotalStudents(data.totalStudents); 
+      } catch (err) {
+        console.error("Error fetching students:", err);
+      } finally {
+        // setLoading(false);
+      }
+    };
+
+    totalStudentsLength();
+  }, []);
 // Calculate totals
 const totalPresent = attendanceByClass.reduce((sum, cls) => sum + cls.present, 0);
 const totalAbsent = attendanceByClass.reduce((sum, cls) => sum + cls.absent, 0);
-const totalStudents = totalPresent + totalAbsent;
 
-export default function StudentDashboardPage() {
   return (
     <main className="p-6 space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <h2 className="text-2xl font-bold">Student Dashboard</h2>
         <div className="flex gap-2">
           <Button><Link href="/dashboard/students/add">Add Student</Link></Button>
-          <Button variant="outline">Update Student</Button>
-          <Button variant="outline">All</Button>
+          <Button variant="outline"><Link href="/dashboard/students/update">Update Student</Link></Button>
+          <Button variant="outline"><Link href="/dashboard/students/all">All</Link></Button>
         </div>
       </div>
 

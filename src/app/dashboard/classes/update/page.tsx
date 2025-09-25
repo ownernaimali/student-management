@@ -42,7 +42,7 @@ export default function AddClassPage() {
     <main className="p-6 max-w-3xl mx-auto">
       <Card>
         <CardHeader>
-          <CardTitle>Add New Class</CardTitle>
+          <CardTitle>Update New Class</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Class Name */}
@@ -104,7 +104,7 @@ export default function AddClassPage() {
 
           <div className="pt-4">
             <Button onClick={handleSubmit} className="w-full">
-              Save Class
+              Update Class
             </Button>
           </div>
         </CardContent>
