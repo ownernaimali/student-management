@@ -42,7 +42,7 @@ export default function UpdateStudentPage() {
     if (!id) return;
     const fetchStudent = async () => {
       try {
-        const res = await fetch(`http:localhost:3001/api/students/${id}`);
+        const res = await fetch(`https://student-management-server-xwpm.onrender.com/api/students/${id}`);
         const data = await res.json();
         if (res.ok) {
         console.log(data.data);
@@ -78,7 +78,7 @@ export default function UpdateStudentPage() {
     setSaving(true);
     try {
 
-      const res = await fetch(`http:localhost:3001/api/students/${id}`, {
+      const res = await fetch(`https://student-management-server-xwpm.onrender.com/api/students/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(student),
