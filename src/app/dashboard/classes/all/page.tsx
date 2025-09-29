@@ -1,136 +1,109 @@
 // app/classes/page.tsx
 "use client";
-
-import { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 
 type ClassType = {
-  id: number;
+  _id: string;
   name: string;
-  section: string;
-  teacher: string;
+  subjects: string[];
+  firstTeacher: { _id: string; name: string } | string;
   room: string;
+  notes: string;
 };
 
 export default function ViewClassesPage() {
-  const [classes, setClasses] = useState<ClassType[]>([
-    {
-      id: 1,
-      name: "Class 1",
-      section: "A",
-      teacher: "Mr. John Doe",
-      room: "101",
-    },
-    {
-      id: 2,
-      name: "Class 2",
-      section: "B",
-      teacher: "Ms. Sarah Lee",
-      room: "202",
-    },
-  ]);
+  const [classes, setClasses] = useState<ClassType[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const handleUpdate = (id: number) => {
-    console.log("Update class:", id);
-    // 👉 redirect to update page (e.g. /classes/update/[id])
-  };
+  useEffect(() => {
+    const fetchClasses = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch("http://localhost:3001/api/classes");
+        const result = await res.json();
 
-  const handleDelete = (id: number) => {
-    setClasses((prev) => prev.filter((c) => c.id !== id));
-    console.log("Deleted class:", id);
-  };
+        if (res.ok && result.status === "success") {
+          setClasses(result.data || []);
+        } else {
+          console.error(result.message || "Failed to load classes");
+        }
+      } catch (e) {
+        console.error("Error fetching classes:", e);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchClasses();
+  }, []);
 
   return (
-    <main className="p-6 max-w-6xl mx-auto">
-      <Card className="px-0 my-6">
-        <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-          <CardTitle className="text-lg font-bold">All Classes</CardTitle>
-          <span className="text-sm text-muted-foreground">
-            Total Classes: <span className="font-semibold">{classes.length}</span>
-          </span>
-        </CardHeader>
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>ID</TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Section</TableHead>
-                  <TableHead>Teacher</TableHead>
-                  <TableHead>Room</TableHead>
-                  <TableHead className="text-center">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {classes.map((c) => (
-                  <TableRow key={c.id} className="hover:bg-muted/50">
-                    <TableCell>{c.id}</TableCell>
-                    <TableCell>{c.name}</TableCell>
-                    <TableCell>{c.section}</TableCell>
-                    <TableCell>{c.teacher}</TableCell>
-                    <TableCell>{c.room}</TableCell>
-                    <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreHorizontal className="h-5 w-5" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem
-                            onClick={() => handleUpdate(c.id)}
-                            className="cursor-pointer"
-                          >
-                            <Pencil className="w-4 h-4 mr-2" /> Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleDelete(c.id)}
-                            className="cursor-pointer text-red-600 focus:text-red-600"
-                          >
-                            <Trash2 className="w-4 h-4 mr-2" /> Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))}
-                {classes.length === 0 && (
-                  <TableRow>
-                    <TableCell
-                      colSpan={6}
-                      className="text-center text-muted-foreground py-6"
-                    >
-                      No classes found.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
+    <main className="p-6 max-w-5xl mx-auto">
+      <h1 className="text-2xl font-bold mb-6">All Classes</h1>
+
+      {loading && <p>Loading classes...</p>}
+
+      {!loading && classes.length === 0 && (
+        <p className="text-gray-500">No classes found.</p>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {classes.map((cls) => (
+          <Card key={cls._id}>
+            <CardHeader>
+              <CardTitle>{cls.name}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {/* Subjects */}
+              <div>
+                <strong>Subjects: </strong>
+                <div className="flex flex-wrap gap-2 mt-1">
+                  {cls.subjects?.map((subj, i) => (
+                    <Badge key={i} variant="secondary">
+                      {subj}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+
+              {/* Teacher */}
+              <div>
+                <strong>First Teacher: </strong>
+                <span>
+                  {typeof cls.firstTeacher === "string"
+                    ? cls.firstTeacher
+                    : cls.firstTeacher?.name}
+                </span>
+              </div>
+
+              {/* Room */}
+              <div>
+                <strong>Room: </strong> {cls.room}
+              </div>
+
+              {/* Notes */}
+              {cls.notes && (
+                <div>
+                  <strong>Notes: </strong> {cls.notes}
+                </div>
+              )}
+
+              {/* Action buttons (future: edit, delete) */}
+              <div className="pt-2 flex gap-2">
+                <Button variant="outline" size="sm">
+                  Edit
+                </Button>
+                <Button variant="destructive" size="sm">
+                  Delete
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </main>
   );
 }

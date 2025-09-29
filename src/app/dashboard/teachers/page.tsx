@@ -1,3 +1,5 @@
+"use client"
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -5,17 +7,33 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import Link from "next/link"
-
+import Link from "next/link";
 export default function TeacherDashboard() {
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    const fetchTotals = async () => {
+      try {
+        const res = await fetch("http://localhost:3001/api/totals/teachers");
+        const data = await res.json();
+        if (res.ok && typeof data.total === "number") {
+          setTotal(data.total);
+        }
+      }catch (e) {
+		console.log("fetch teacher total error: ", e);
+      }
+    };
+    fetchTotals();
+  }, []);
+
   return (
     <main className="p-6 space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <h2 className="text-2xl font-bold">Teachers Dashboard</h2>
         <div className="flex gap-2">
-          <Button><Link href="/dashboard/teachers/add">Add Teacher</Link></Button>
-          <Button variant="outline">Update Teacher</Button>
-          <Button variant="outline">View All</Button>
+          <Link href="/dashboard/teachers/add"><Button>Add Teacher</Button></Link>
+          <Link href="/dashboard/teachers/update"><Button variant="outline">Update Teacher</Button></Link>
+          <Link href="/dashboard/teachers/all"><Button variant="outline">View All</Button></Link>
         </div>
       </div>
 
@@ -26,7 +44,9 @@ export default function TeacherDashboard() {
             <CardTitle>Total Teachers</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold">12</p>
+            <p className="text-3xl font-bold">
+              {total}
+            </p>
           </CardContent>
         </Card>
 
@@ -48,8 +68,6 @@ export default function TeacherDashboard() {
           </CardContent>
         </Card>
       </div>
-
-     
     </main>
   );
 }

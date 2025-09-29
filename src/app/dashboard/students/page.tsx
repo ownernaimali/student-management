@@ -31,12 +31,12 @@ const [totalStudents, setTotalStudents] = useState<number>(0);
   useEffect(() => {
     const totalStudentsLength = async () => {
       try {
-        const res = await fetch("https://student-management-server-xwpm.onrender.com/api/totals/students");
+        const res = await fetch("http://localhost:3001/api/totals/students");
         if (!res.ok) {
           throw new Error("Failed to fetch total students");
         }
-        const data = await res.json();
-        setTotalStudents(data.totalStudents); 
+        const data = await res.json();        
+        setTotalStudents(data.total); 
       } catch (err) {
         console.error("Error fetching students:", err);
       } finally {

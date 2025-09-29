@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,64 +14,69 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useParams } from "next/navigation";
+export default function UpdateTeacherPage() {
 
-export default function AddTeacherPage() {
-  const [teacher, setTeacher] = useState({
-    name: "",
-    subject: "",
-    mobile: "",
-    email: "",
-    gender: "",
-    qualification: "",
-    address: "",
-    otherInfo: "",
-  });
+  const { id } = useParams();
+  const [teacher, setTeacher] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [response, setResponse] = useState<string | null>(null);
 
+  useEffect(() => {
+    const fetchTeacher = async () => {
+      try {
+        const res = await fetch(`http://localhost:3001/api/teachers/${id}`);
+        const data = await res.json();
+
+        if (data.status === "success") {
+          setTeacher(data.data);
+        }
+        else {
+        return;
+        }
+      } catch (e) {
+        console.error("Teacher update page error: ", e);
+      }
+    };
+
+    if (id) fetchTeacher();
+  }, [id]);
+  
+  
   const handleChange = (key: keyof typeof teacher, value: string) => {
     setTeacher((prev) => ({ ...prev, [key]: value }));
   };
-
-  const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<string | null>(null);
 
   const handleSubmit = async () => {
     setLoading(true);
     setResponse(null);
     try {
-      const res = await fetch("http://localhost:3001/api/teachers", {
-        method: "POST",
+      const res = await fetch(`http://localhost:3001/api/teachers/${id}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(teacher),
       });
       const data = await res.json();
+
       if (res.ok && data.status === "success") {
-        setResponse(`Teacher added successfully! ID: ${data.id}`);
+        setResponse(`Teacher update successfully!`);
+        console.log(data);
         Swal.fire({
           icon: "success",
-          title: "Teacher Added",
-          text: `Teacher added successfully! ID: ${data.id}`,
+          title: "Teacher Updated",
+          text: `Teacher update successfully!`,
         });
-        setTeacher({
-    name: "",
-    subject: "",
-    mobile: "",
-    email: "",
-    gender: "",
-    qualification: "",
-    address: "",
-    otherInfo: "",
-    })
       } else {
-        setResponse(`Failed to add teacher: ${data.message || "Unknown error"}`);
+        setResponse(`Failed to update teacher: ${data.message || "Unknown error"}`);
         Swal.fire({
           icon: "error",
           title: "Error",
           text: data.message || "Failed to add teacher.",
         });
       }
-      console.log("API Response:", data);
+      
     } catch (error) {
       setResponse("Failed to add teacher.");
       Swal.fire({
@@ -89,7 +94,7 @@ export default function AddTeacherPage() {
     <main className="p-6 max-w-4xl mx-auto">
       <Card>
         <CardHeader>
-          <CardTitle>Add New Teacher</CardTitle>
+          <CardTitle>Update Teacher</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -97,7 +102,7 @@ export default function AddTeacherPage() {
               <Label>Name</Label>
               <Input
                 placeholder="Enter full name"
-                value={teacher.name}
+                value={teacher.name || ""}
                 onChange={(e) => handleChange("name", e.target.value)}
               />
             </div>
@@ -105,7 +110,7 @@ export default function AddTeacherPage() {
               <Label>Subject</Label>
               <Input
                 placeholder="Enter subject"
-                value={teacher.subject}
+                value={teacher.subject || ""}
                 onChange={(e) => handleChange("subject", e.target.value)}
               />
             </div>
@@ -114,7 +119,7 @@ export default function AddTeacherPage() {
               <Input
                 type="tel"
                 placeholder="Enter mobile number"
-                value={teacher.mobile}
+                value={teacher.mobile || ""}
                 onChange={(e) => handleChange("mobile", e.target.value)}
               />
             </div>
@@ -123,14 +128,14 @@ export default function AddTeacherPage() {
               <Input
                 type="email"
                 placeholder="Enter email address"
-                value={teacher.email}
+                value={teacher.email || ""}
                 onChange={(e) => handleChange("email", e.target.value)}
               />
             </div>
             <div>
               <Label>Gender</Label>
               <Select
-                value={teacher.gender}
+                value={teacher.gender || ""}
                 onValueChange={(val) => handleChange("gender", val)}
               >
                 <SelectTrigger>
@@ -147,7 +152,7 @@ export default function AddTeacherPage() {
               <Label>Qualification</Label>
               <Input
                 placeholder="Enter qualification"
-                value={teacher.qualification}
+                value={teacher.qualification || ""}
                 onChange={(e) => handleChange("qualification", e.target.value)}
               />
             </div>
@@ -155,7 +160,7 @@ export default function AddTeacherPage() {
               <Label>Address</Label>
               <Textarea
                 placeholder="Enter address"
-                value={teacher.address}
+                value={teacher.address || ""}
                 onChange={(e) => handleChange("address", e.target.value)}
               />
             </div>
@@ -163,7 +168,7 @@ export default function AddTeacherPage() {
               <Label>Other Information</Label>
               <Textarea
                 placeholder="Enter any additional info"
-                value={teacher.otherInfo}
+                value={teacher.otherInfo  || ""}
                 onChange={(e) => handleChange("otherInfo", e.target.value)}
               />
             </div>
@@ -171,7 +176,7 @@ export default function AddTeacherPage() {
 
           <div className="pt-4 space-y-2">
             <Button onClick={handleSubmit} disabled={loading}>
-              {loading ? "Submitting..." : "Submit Teacher"}
+              {loading ? "Updating..." : "Update Teacher"}
             </Button>
             {response && (
               <div className="text-sm text-green-600 mt-2">{response}</div>

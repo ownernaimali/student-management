@@ -16,32 +16,25 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Swal from "sweetalert2";
 
-type Student = {
-  _id: string;
-  name: string;
-  fatherName: string;
-  motherName: string;
-  dob: string;
-  mobile: string;
-  gender: string;
-  classLevel: string;
-  previousSchool?: string;
-  address: string;
-  otherInfo?: string;
-};
-
 export default function UpdateStudentPage() {
   const { id } = useParams();
 
-  const [student, setStudent] = useState<Student | null>(null);
+  const [student, setStudent] = useState({});
   const [loading, setLoading] = useState(true);
+  const [classInfo, setClassInfo] = useState([]);
   const [saving, setSaving] = useState(false);
 
   // ✅ Fetch student by ID
   useEffect(() => {
+  
     if (!id) return;
     const fetchStudent = async () => {
       try {
+      
+  fetch("http://localhost:3001/api/classes")
+  .then(res => res.json())
+  .then(data => setClassInfo(data.data))
+  
         const res = await fetch(`https://student-management-server-xwpm.onrender.com/api/students/${id}`);
         const data = await res.json();
         if (res.ok) {
@@ -118,9 +111,9 @@ export default function UpdateStudentPage() {
                 <SelectValue placeholder="Select class" />
               </SelectTrigger>
               <SelectContent>
-                {[...Array(12)].map((_, i) => (
-                  <SelectItem key={i + 1} value={`${i + 1}`}>
-                    Class {i + 1}
+                {classInfo.map((cl, i) => (
+                  <SelectItem key={i + 1} value={cl.name}>
+                    Class {cl.name}
                   </SelectItem>
                 ))}
               </SelectContent>

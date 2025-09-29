@@ -1,7 +1,7 @@
 // app/classes/add/page.tsx
 "use client";
-
-import { useState } from "react";
+import Swal from "sweetalert2";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -23,19 +23,98 @@ import {
 export default function AddClassPage() {
   const [classData, setClassData] = useState({
     name: "",
-    section: "",
-    teacher: "",
+    subjects: [] as string[],
+    firstTeacher: "",
     room: "",
     notes: "",
   });
 
-  const handleChange = (key: keyof typeof classData, value: string) => {
+  const [subjectInput, setSubjectInput] = useState("");
+  const [teachers, setTeachers] = useState([]);
+  const [loadingTeachers, setLoadingTeachers] = useState(false);
+
+  const handleChange = (key: keyof typeof classData, value: any) => {
     setClassData((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSubmit = () => {
-    console.log("Class Created:", classData);
-    // 👉 Call API (POST /api/classes)
+  const addSubject = () => {
+    if (subjectInput.trim() !== "") {
+      setClassData((prev) => ({
+        ...prev,
+        subjects: [...prev.subjects, subjectInput.trim()],
+      }));
+      setSubjectInput("");
+    }
+  };
+
+  const removeSubject = (index: number) => {
+    setClassData((prev) => ({
+      ...prev,
+      subjects: prev.subjects.filter((_, i) => i !== index),
+    }));
+  };
+
+  // Fetch teachers from API
+  useEffect(() => {
+    const fetchTeachers = async () => {
+      try {
+        setLoadingTeachers(true);
+        const res = await fetch("http://localhost:3001/api/teachers");
+        const data = await res.json();
+        if (res.ok) {
+          setTeachers(data.data); 
+        } else {
+          Swal.fire("Error", data.message || "Failed to load teachers", "error");
+        }
+      } catch (e) {
+        console.error(e);
+        Swal.fire("Error", "Could not fetch teachers", "error");
+      } finally {
+        setLoadingTeachers(false);
+      }
+    };
+
+    fetchTeachers();
+  }, []);
+
+  const handleSubmit = async () => {
+    try {
+      const res = await fetch("http://localhost:3001/api/classes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(classData),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.status === "success") {
+        Swal.fire({
+          icon: "success",
+          title: "Class Added",
+          text: `Class created successfully! ID: ${data.id}`,
+        });
+        setClassData({
+          name: "",
+          subjects: [],
+          firstTeacher: "",
+          room: "",
+          notes: "",
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: data?.message || "Failed to add class.",
+        });
+      }
+    } catch (e) {
+      console.error(e);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Something went wrong",
+      });
+    }
   };
 
   return (
@@ -45,7 +124,7 @@ export default function AddClassPage() {
           <CardTitle>Add New Class</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Class Name */}
+          {/* Class Name / Level */}
           <div>
             <Label>Class Name / Level</Label>
             <Input
@@ -55,29 +134,60 @@ export default function AddClassPage() {
             />
           </div>
 
-          {/* Section */}
+          {/* Subjects (Dynamic List) */}
           <div>
-            <Label>Section</Label>
-            <Input
-              placeholder="e.g. A, B, C"
-              value={classData.section}
-              onChange={(e) => handleChange("section", e.target.value)}
-            />
+            <Label>Subjects</Label>
+            <div className="flex gap-2">
+              <Input
+                placeholder="Enter subject (e.g. Math, English)"
+                value={subjectInput}
+                onChange={(e) => setSubjectInput(e.target.value)}
+              />
+              <Button type="button" onClick={addSubject}>
+                Add
+              </Button>
+            </div>
+
+            {/* Display Added Subjects */}
+            <div className="flex flex-wrap gap-2 mt-2">
+              {classData.subjects.map((subj, index) => (
+                <span
+                  key={index}
+                  className="px-3 py-1 bg-gray-200 rounded-full flex items-center gap-2"
+                >
+                  {subj}
+                  <button
+                    type="button"
+                    onClick={() => removeSubject(index)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    ✕
+                  </button>
+                </span>
+              ))}
+            </div>
           </div>
 
-          {/* Teacher */}
+          {/* First Teacher */}
           <div>
-            <Label>Assign Teacher</Label>
+            <Label>First Teacher</Label>
             <Select
-              value={classData.teacher}
-              onValueChange={(val) => handleChange("teacher", val)}
+              value={classData.firstTeacher}
+              onValueChange={(val) => handleChange("firstTeacher", val)}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select teacher" />
+                <SelectValue
+                  placeholder={
+                    loadingTeachers ? "Loading teachers..." : "Select teacher"
+                  }
+                />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="1">Mr. John Doe</SelectItem>
-                <SelectItem value="2">Ms. Sarah Lee</SelectItem>
+                {teachers.map((teacher, index) => (
+                  <SelectItem key={index} value={teacher.name}>
+                    {teacher.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

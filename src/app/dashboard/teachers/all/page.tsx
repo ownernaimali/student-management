@@ -2,7 +2,7 @@
 // app/teachers/view/page.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -25,48 +25,28 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal, Pencil, Trash2, Users } from "lucide-react";
+import Link from "next/link";
 
-type Teacher = {
-  id: number;
-  name: string;
-  subject: string;
-  email: string;
-  mobile: string;
-  gender: string;
-  qualification: string;
-};
 
 export default function ViewTeachersPage() {
-  const [teachers, setTeachers] = useState<Teacher[]>([
-    {
-      id: 1,
-      name: "Mr. John Doe",
-      subject: "Mathematics",
-      email: "john.doe@example.com",
-      mobile: "1234567890",
-      gender: "Male",
-      qualification: "M.Sc. Mathematics",
-    },
-    {
-      id: 2,
-      name: "Ms. Sarah Lee",
-      subject: "English",
-      email: "sarah.lee@example.com",
-      mobile: "9876543210",
-      gender: "Female",
-      qualification: "M.A. English",
-    },
-  ]);
+  const [teachers, setTeachers] = useState([]);
+  
+  useEffect(() => {
+	try {
+		fetch("http://localhost:3001/api/teachers")
+		.then(res => res.json())
+		.then(data => {
+			if(data.status === "success") {
+				setTeachers(data.data || [])
+			} else if (data.status === "error") {
+				console.log("error: ", data?.message)
+			}
+		})
+	} catch (e) {
+		console.log("/teachers/all/page.tsx: ", e);
+	}
+  }, []);
 
-  const handleUpdate = (id: number) => {
-    alert(`Update teacher with ID: ${id}`);
-  };
-
-  const handleDelete = (id: number) => {
-    if (confirm("Are you sure you want to delete this teacher?")) {
-      setTeachers(teachers.filter((t) => t.id !== id));
-    }
-  };
 
   return (
     <main className="p-4 sm:p-6 max-w-7xl mx-auto">
@@ -103,9 +83,9 @@ export default function ViewTeachersPage() {
               </TableHeader>
 
               <TableBody>
-                {teachers.map((t) => (
-                  <TableRow key={t.id} className="hover:bg-muted/50">
-                    <TableCell>{t.id}</TableCell>
+                {teachers.map((t, index) => (
+                  <TableRow key={index} className="hover:bg-muted/50">
+                    <TableCell>{index+1}</TableCell>
                     <TableCell className="font-medium">{t.name}</TableCell>
                     <TableCell>{t.subject}</TableCell>
                     <TableCell className="hidden sm:table-cell">
@@ -126,14 +106,14 @@ export default function ViewTeachersPage() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
+                          <Link href={`/dashboard/teachers/update/${t._id}/edit`}>
                           <DropdownMenuItem
-                            onClick={() => handleUpdate(t.id)}
                             className="cursor-pointer"
                           >
                             <Pencil className="w-4 h-4 mr-2" /> Edit
                           </DropdownMenuItem>
+                          </Link>
                           <DropdownMenuItem
-                            onClick={() => handleDelete(t.id)}
                             className="cursor-pointer text-red-600 focus:text-red-600"
                           >
                             <Trash2 className="w-4 h-4 mr-2" /> Delete
