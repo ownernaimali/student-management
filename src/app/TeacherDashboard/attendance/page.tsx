@@ -1,0 +1,208 @@
+"use client";
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Download, UserCheck, UserX, Users } from "lucide-react";
+import { useState, useEffect } from "react";
+import Swal from "sweetalert2";
+
+
+
+interface Student {
+  _id: string;
+  name: string;
+  className: string;
+  [key: string]: any;
+}
+
+
+
+export default function StudentAttendance() {
+
+  const classLevel = "3"; 
+  const nowDate = new Date().toISOString().split("T")[0];
+  const [students, setStudents] = useState<Student[]>([]);
+  const [attendance, setAttendance] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(true);
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+
+  // Fetch students from API
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const response = await fetch(`http://localhost:3001/api/students/class/${classLevel}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch students');
+        }
+        const data = await response.json();
+        
+        
+        setStudents(data.data);
+
+      } catch (error) {
+        console.error('Error fetching students:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStudents();
+  }, []);
+
+const handleAttendance = (id: string, status: string) => {
+
+try {
+fetch(`http://localhost:3001/api/students/attendance/${id}`, {
+  method: "PUT",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ status }),
+})
+.then(res => res.json())
+.then(data => {
+if(data.status==="success") {
+const statusText = status.charAt(0).toUpperCase() + status.slice(1);
+  setAttendance({ ...attendance, [id]: status });
+  Swal.fire(statusText, `Student mark as ${status}`, "success")
+} else {
+  Swal.fire("Error", data?.message || "Unknown Error. try again", "error")
+}
+
+});
+} catch (e) {
+	console.log(e);
+}
+}
+
+
+  if (loading) {
+    return (
+      <div className="p-6 flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Loading students...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="py-6 px-1 space-y-6">
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-bold tracking-tight">Student Attendance</h1>
+          <p className="text-muted-foreground">
+            Class {classLevel} - Manage student attendance for {selectedDate}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Input
+            type="date"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            className="w-auto"
+          />
+          <Button variant="outline" size="sm">
+            <Download className="h-4 w-4 mr-2" />
+            Export
+          </Button>
+        </div>
+      </div>
+
+      {/* Attendance Stats */}
+      <div className="grid gap-3 grid-cols-3">
+        <Card>
+          <CardHeader className="h-10 flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Students</CardTitle>
+            <Users className="h-4 w-4 text-blue-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{students.length}</div>
+            <p className="text-xs text-muted-foreground">Class {classLevel}</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="h-10 flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Present</CardTitle>
+            <UserCheck className="h-4 w-4 text-green-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">{students.length}</div>
+            <p className="text-xs text-muted-foreground">
+              100% of class
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="h-10 flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Absent</CardTitle>
+            <UserX className="h-4 w-4 text-red-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-red-600">{students.length}</div>
+            <p className="text-xs text-muted-foreground">
+              100% of class
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+ 
+      {/* Students List */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Class {classLevel} Students</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {students.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                No students found matching your search.
+              </div>
+            ) : (
+              students.map((student, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-4 border rounded-lg"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                      <span className="font-semibold text-blue-600">
+                        NC
+                      </span>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold">{student.name}</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Roll No: 01
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                    disabled={attendance[student._id] === "present" || student?.attendanceHistory.some(record => record.attendDate === nowDate && record.status === "present") }
+                      size="sm"
+                      onClick={() => handleAttendance(student._id, "present")}
+                      className="bg-green-600 hover:bg-green-700 text-white"
+                    > {student.attendanceHistory.status}
+                      Present
+                    </Button>
+                    <Button
+                    disabled={attendance[student._id] === "absent" || student?.attendanceHistory.some(record=> record.attendDate === nowDate && record.status === "absent" ) || attendance[student._id] === "absent" }
+                    onClick={() => handleAttendance(student._id, "absent")}
+                      size="sm"
+                      className="bg-red-600 hover:bg-red-700 text-white"
+                    >
+                      Absent
+                    </Button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
