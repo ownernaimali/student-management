@@ -25,13 +25,15 @@ export default function AddStudentPage() {
     name: "",
     fatherName: "",
     motherName: "",
+    birthSerial: "",
     dob: "",
     mobile: "",
+    parentMobile: "",
     gender: "",
     classLevel: "",
-    previousSchool: "",
     address: "",
     otherInfo: "",
+    attendanceHistory: [],
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -85,6 +87,8 @@ export default function AddStudentPage() {
     }
     if (!student.gender) newErrors.gender = "Gender is required";
     if (!student.address) newErrors.address = "Address is required";
+    if (!student.parentMobile) newErros.parentMobile = "Parent Mobile is required";
+    if (!student.birthSerial) newErros.parentMobile = "Birth Serial Number is required";
 
     setErrors(newErrors);
 
@@ -115,16 +119,18 @@ export default function AddStudentPage() {
           "success"
         );
         setStudent({
-          name: "",
-          fatherName: "",
-          motherName: "",
-          dob: "",
-          mobile: "",
-          gender: "",
-          classLevel: "",
-          previousSchool: "",
-          address: "",
-          otherInfo: "",
+    name: "",
+    fatherName: "",
+    motherName: "",
+    birthSerial: "",
+    dob: "",
+    mobile: "",
+    parentMobile: "",
+    gender: "",
+    classLevel: "",
+    address: "",
+    otherInfo: "",
+    attendanceHistory: [],
         });
         setErrors({});
       } else {
@@ -215,17 +221,6 @@ export default function AddStudentPage() {
               )}
             </div>
             <div>
-              <Label>Date of Birth</Label>
-              <Input
-                type="date"
-                value={student.dob}
-                onChange={(e) => handleChange("dob", e.target.value)}
-              />
-              {errors.dob && (
-                <p className="text-sm text-red-500 mt-1">{errors.dob}</p>
-              )}
-            </div>
-            <div>
               <Label>Mobile Number</Label>
               <Input
                 type="tel"
@@ -235,6 +230,17 @@ export default function AddStudentPage() {
               />
               {errors.mobile && (
                 <p className="text-sm text-red-500 mt-1">{errors.mobile}</p>
+              )}
+            </div>
+            <div>
+              <Label>Date of Birth</Label>
+              <Input
+                type="date"
+                value={student.dob}
+                onChange={(e) => handleChange("dob", e.target.value)}
+              />
+              {errors.dob && (
+                <p className="text-sm text-red-500 mt-1">{errors.dob}</p>
               )}
             </div>
             <div>
@@ -249,7 +255,6 @@ export default function AddStudentPage() {
                 <SelectContent>
                   <SelectItem value="Male">Male</SelectItem>
                   <SelectItem value="Female">Female</SelectItem>
-                  <SelectItem value="Other">Other</SelectItem>
                 </SelectContent>
               </Select>
               {errors.gender && (
@@ -258,14 +263,16 @@ export default function AddStudentPage() {
             </div>
             <div className="md:col-span-2">
               <Label>
-                Previous School{" "}
-                <span className="text-muted-foreground">(optional)</span>
+                Birth Serial No
               </Label>
               <Input
-                placeholder="Enter previous school"
-                value={student.previousSchool}
-                onChange={(e) => handleChange("previousSchool", e.target.value)}
+                placeholder="Enter birth serial number"
+                value={student.birthSerial}
+                onChange={(e) => handleChange("birthSerial", e.target.value)}
               />
+              {errors.birthSerial && (
+                <p className="text-sm text-red-500 mt-1">{errors.mobile}</p>
+              )}
             </div>
             <div className="md:col-span-2">
               <Label>Address</Label>
@@ -285,6 +292,19 @@ export default function AddStudentPage() {
                 value={student.otherInfo}
                 onChange={(e) => handleChange("otherInfo", e.target.value)}
               />
+            </div>
+            <div className="md:col-span-2">
+              <Label>
+                Parent Mobile Number
+              </Label>
+              <Input
+                placeholder="Enter Parent Mobile number"
+                value={student.parentNumber}
+                onChange={(e) => handleChange("parentNumber", e.target.value)}
+              />
+              {errors.parentNumber && (
+                <p className="text-sm text-red-500 mt-1">{errors.mobile}</p>
+              )}
             </div>
           </div>
 

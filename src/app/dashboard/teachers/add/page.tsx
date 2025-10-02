@@ -25,6 +25,9 @@ export default function AddTeacherPage() {
     qualification: "",
     address: "",
     otherInfo: "",
+    password: "",
+    role: "teacher",
+    status: "active",
   });
 
   const handleChange = (key: keyof typeof teacher, value: string) => {
@@ -38,12 +41,12 @@ export default function AddTeacherPage() {
     setLoading(true);
     setResponse(null);
     try {
-      const res = await fetch("http://localhost:3001/api/teachers", {
+          const res = await fetch("http://localhost:3001/api/teachers", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(teacher),
+        body: JSON.stringify({...teacher, date: new Date().toISOString().split('T')[0]}),
       });
       const data = await res.json();
       if (res.ok && data.status === "success") {
@@ -54,15 +57,18 @@ export default function AddTeacherPage() {
           text: `Teacher added successfully! ID: ${data.id}`,
         });
         setTeacher({
-    name: "",
-    subject: "",
-    mobile: "",
-    email: "",
-    gender: "",
-    qualification: "",
-    address: "",
-    otherInfo: "",
-    })
+          name: "",
+          subject: "",
+          mobile: "",
+          email: "",
+          gender: "",
+          qualification: "",
+          address: "",
+          otherInfo: "",
+          password: "",
+          role: "teacher",
+          status: "active",
+        });
       } else {
         setResponse(`Failed to add teacher: ${data.message || "Unknown error"}`);
         Swal.fire({
@@ -125,6 +131,15 @@ export default function AddTeacherPage() {
                 placeholder="Enter email address"
                 value={teacher.email}
                 onChange={(e) => handleChange("email", e.target.value)}
+              />
+            </div>
+            <div>
+              <Label>Password</Label>
+              <Input
+                type="text"
+                placeholder="Enter password"
+                value={teacher.password}
+                onChange={(e) => handleChange("password", e.target.value)}
               />
             </div>
             <div>

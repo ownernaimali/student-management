@@ -1,24 +1,7 @@
 "use client"
 
 import * as React from "react"
-import {
-  IconChartBar,
-  IconDashboard,
-  IconDatabase,
-  IconFileWord,
-  IconFolder,
-  IconHelp,
-  IconInnerShadowTop,
-  IconListDetails,
-  IconReport,
-  IconSearch,
-  IconSettings,
-  IconUsers,
-  Icon
-} from "@tabler/icons-react"
-
-
-import { NavDocuments } from "@/components/nav-documents"
+import { IconInnerShadowTop} from "@tabler/icons-react"
 import { NavMain } from "@/components/nav-main"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
@@ -31,20 +14,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-
-// types/sidebar.ts
-import { Icon } from "@tabler/icons-react";
+import { type Icon } from "@tabler/icons-react"
 
 export interface SidebarNavItem {
   title: string;
   url: string;
-  icon: typeof Icon; // tabler icons are components
-}
-
-export interface SidebarDocument {
-  name: string;
-  url: string;
-  icon: typeof Icon;
+  icon:  Icon; 
 }
 
 export interface SidebarUser {
@@ -57,7 +32,6 @@ export interface SidebarData {
   user: SidebarUser;
   navMain: SidebarNavItem[];
   navSecondary: SidebarNavItem[];
-  documents: SidebarDocument[];
 }
 
 
@@ -81,7 +55,6 @@ export function AppSidebar({data, ...props }: {data: SidebarData} & React.Compon
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

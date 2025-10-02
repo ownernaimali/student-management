@@ -15,10 +15,22 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useParams } from "next/navigation";
+interface Teacher {
+  name?: string;
+  subject?: string;
+  mobile?: string;
+  email?: string;
+  gender?: string;
+  qualification?: string;
+  address?: string;
+  otherInfo?: string;
+  [key: string]: any;
+}
+
 export default function UpdateTeacherPage() {
 
   const { id } = useParams();
-  const [teacher, setTeacher] = useState({});
+  const [teacher, setTeacher] = useState<Teacher>({});
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<string | null>(null);
 
@@ -50,6 +62,7 @@ export default function UpdateTeacherPage() {
   const handleSubmit = async () => {
     setLoading(true);
     setResponse(null);
+
     try {
       const res = await fetch(`http://localhost:3001/api/teachers/${id}`, {
         method: "PUT",
