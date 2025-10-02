@@ -10,7 +10,7 @@ interface DashboardLayoutProps {
 }
 
 export default async function AdminDashboardLayout({ children }: DashboardLayoutProps) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
   const user = cookieStore.get("user")?.value;
 

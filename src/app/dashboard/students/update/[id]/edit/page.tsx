@@ -16,12 +16,42 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Swal from "sweetalert2";
 
+type Student = {
+  _id: string;
+  classLevel?: string;
+  name?: string;
+  fatherName?: string;
+  motherName?: string;
+  dob?: string;
+  mobile?: string;
+  gender?: string;
+  previousSchool?: string;
+  address?: string;
+  otherInfo?: string;
+  [key: string]: unknown;
+};
+
+type MyClass = {
+  name: string;
+};
 export default function UpdateStudentPage() {
   const { id } = useParams();
 
-  const [student, setStudent] = useState({});
+  const [student, setStudent] = useState<Student>({
+    _id: "",
+    classLevel: "",
+    name: "",
+    fatherName: "",
+    motherName: "",
+    dob: "",
+    mobile: "",
+    gender: "",
+    previousSchool: "",
+    address: "",
+    otherInfo: "",
+  });
   const [loading, setLoading] = useState(true);
-  const [classInfo, setClassInfo] = useState([]);
+  const [classInfo, setClassInfo] = useState<MyClass[]>([{name: ""}]);
   const [saving, setSaving] = useState(false);
 
   // ✅ Fetch student by ID
@@ -31,14 +61,13 @@ export default function UpdateStudentPage() {
     const fetchStudent = async () => {
       try {
       
-  fetch("http://localhost:3001/api/classes")
+  fetch("https://student-management-server-xwpm.onrender.com/api/classes")
   .then(res => res.json())
   .then(data => setClassInfo(data.data))
   
         const res = await fetch(`https://student-management-server-xwpm.onrender.com/api/students/${id}`);
         const data = await res.json();
         if (res.ok) {
-        console.log(data.data);
           setStudent(data.data);
         } else {
           Swal.fire("Error", data.message, "error");
@@ -53,7 +82,7 @@ export default function UpdateStudentPage() {
   }, [id]);
 
   // ✅ Handle input changes
-  const handleChange = (key: keyof Student, value: string) => {
+  const handleChange = (key: string, value: string) => {
     if (!student) return;
     setStudent((prev) => ({ ...prev!, [key]: value }));
   };

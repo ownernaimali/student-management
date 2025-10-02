@@ -14,7 +14,7 @@ const [classLength, setClassLength] = useState(0);
 
 useEffect(() => {
 	try {
-		fetch("http://localhost:3001/api/totals/classes")
+		fetch("https://student-management-server-xwpm.onrender.com/api/totals/classes")
 		.then(res => res.json())
 		.then(data => setClassLength(data.total || 0))
 		

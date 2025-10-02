@@ -24,27 +24,38 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Pencil, Trash2, Users } from "lucide-react";
+import { Key, MoreHorizontal, Pencil, Trash2, Users } from "lucide-react";
 import Link from "next/link";
 
 
+type Teacher = {
+  _id: string;
+  name: string;
+  subject: string;
+  email: string;
+  mobile: string;
+  gender: string;
+  qualification: string;
+  [key: string]: string;
+};
+
 export default function ViewTeachersPage() {
-  const [teachers, setTeachers] = useState([]);
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
   
   useEffect(() => {
-	try {
-		fetch("http://localhost:3001/api/teachers")
-		.then(res => res.json())
-		.then(data => {
-			if(data.status === "success") {
-				setTeachers(data.data || [])
-			} else if (data.status === "error") {
-				console.log("error: ", data?.message)
-			}
-		})
-	} catch (e) {
-		console.log("/teachers/all/page.tsx: ", e);
-	}
+    try {
+      fetch("https://student-management-server-xwpm.onrender.com/api/teachers")
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === "success") {
+            setTeachers(data.data || [])
+          } else if (data.status === "error") {
+            console.log("error: ", data?.message)
+          }
+        })
+    } catch (e) {
+      console.log("/teachers/all/page.tsx: ", e);
+    }
   }, []);
 
 

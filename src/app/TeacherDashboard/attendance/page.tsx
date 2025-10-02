@@ -9,11 +9,17 @@ import Swal from "sweetalert2";
 
 
 
+interface AttendanceRecord {
+  attendDate: string;
+  status: string;
+}
+
 interface Student {
   _id: string;
   name: string;
   className: string;
-  [key: string]: any;
+  attendanceHistory: AttendanceRecord[];
+  [key: string]: unknown;
 }
 
 
@@ -31,17 +37,17 @@ export default function StudentAttendance() {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/api/students/class/${classLevel}`);
+        const response = await fetch(`https://student-management-server-xwpm.onrender.com/api/students/class/${classLevel}`);
         if (!response.ok) {
           throw new Error('Failed to fetch students');
         }
         const data = await response.json();
-        
-        
         setStudents(data.data);
-
-      } catch (error) {
-        console.error('Error fetching students:', error);
+      } catch (e) {
+         if (typeof e === "object" && e !== null && "status" in e) {
+      const err = e as { status: string; message: string };
+        Swal.fire("Error", err?.message || "Unknown Error. try again", "error") 
+         }
       } finally {
         setLoading(false);
       }
@@ -53,7 +59,7 @@ export default function StudentAttendance() {
 const handleAttendance = (id: string, status: string) => {
 
 try {
-fetch(`http://localhost:3001/api/students/attendance/${id}`, {
+fetch(`https://student-management-server-xwpm.onrender.com/api/students/attendance/${id}`, {
   method: "PUT",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({ status }),
@@ -181,15 +187,24 @@ const statusText = status.charAt(0).toUpperCase() + status.slice(1);
                   </div>
                   <div className="flex items-center gap-2">
                     <Button
-                    disabled={attendance[student._id] === "present" || student?.attendanceHistory.some(record => record.attendDate === nowDate && record.status === "present") }
+                    disabled={
+                      attendance[student._id] === "present" ||
+                      student.attendanceHistory.some(
+                          (record: { attendDate: string; status: string; }) =>
+                            record.attendDate === nowDate && record.status === "present"
+                        )
+                    }
                       size="sm"
                       onClick={() => handleAttendance(student._id, "present")}
                       className="bg-green-600 hover:bg-green-700 text-white"
-                    > {student.attendanceHistory.status}
+                    > 
                       Present
                     </Button>
                     <Button
-                    disabled={attendance[student._id] === "absent" || student?.attendanceHistory.some(record=> record.attendDate === nowDate && record.status === "absent" ) || attendance[student._id] === "absent" }
+                    disabled={attendance[student._id] === "absent" || student.attendanceHistory.some(
+                          (record: { attendDate: string; status: string; }) =>
+                            record.attendDate === nowDate && record.status === "absent"
+                        ) }
                     onClick={() => handleAttendance(student._id, "absent")}
                       size="sm"
                       className="bg-red-600 hover:bg-red-700 text-white"

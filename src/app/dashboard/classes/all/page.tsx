@@ -22,7 +22,7 @@ export default function ViewClassesPage() {
     const fetchClasses = async () => {
       try {
         setLoading(true);
-        const res = await fetch("http://localhost:3001/api/classes");
+        const res = await fetch("https://student-management-server-xwpm.onrender.com/api/classes");
         const result = await res.json();
 
         if (res.ok && result.status === "success") {

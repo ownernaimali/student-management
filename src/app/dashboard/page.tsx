@@ -67,7 +67,7 @@ export default function TeacherDashboard() {
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">Teacher Dashboard</h1>
         <p className="text-muted-foreground">
-          Welcome back! Here's an overview of your classes and students.
+          Welcome back! Here&#39;;s an overview of your classes and students.
         </p>
       </div>
 

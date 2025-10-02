@@ -41,7 +41,7 @@ export default function AddTeacherPage() {
     setLoading(true);
     setResponse(null);
     try {
-          const res = await fetch("http://localhost:3001/api/teachers", {
+          const res = await fetch("https://student-management-server-xwpm.onrender.com/api/teachers", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -30,10 +30,11 @@ export default function AddClassPage() {
   });
 
   const [subjectInput, setSubjectInput] = useState("");
-  const [teachers, setTeachers] = useState([]);
+  type Teacher = { name: string; [key: string]: unknown };
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [loadingTeachers, setLoadingTeachers] = useState(false);
 
-  const handleChange = (key: keyof typeof classData, value: any) => {
+  const handleChange = (key: keyof typeof classData, value: unknown) => {
     setClassData((prev) => ({ ...prev, [key]: value }));
   };
 
@@ -59,7 +60,7 @@ export default function AddClassPage() {
     const fetchTeachers = async () => {
       try {
         setLoadingTeachers(true);
-        const res = await fetch("http://localhost:3001/api/teachers");
+        const res = await fetch("https://student-management-server-xwpm.onrender.com/api/teachers");
         const data = await res.json();
         if (res.ok) {
           setTeachers(data.data); 
@@ -67,8 +68,13 @@ export default function AddClassPage() {
           Swal.fire("Error", data.message || "Failed to load teachers", "error");
         }
       } catch (e) {
-        console.error(e);
-        Swal.fire("Error", "Could not fetch teachers", "error");
+        Swal.fire(
+          "Error",
+          typeof e === "object" && e !== null && "message" in e
+            ? (e as { message?: string }).message
+            : "Could not fetch teachers",
+          "error"
+        );
       } finally {
         setLoadingTeachers(false);
       }
@@ -79,7 +85,7 @@ export default function AddClassPage() {
 
   const handleSubmit = async () => {
     try {
-      const res = await fetch("http://localhost:3001/api/classes", {
+      const res = await fetch("https://student-management-server-xwpm.onrender.com/api/classes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(classData),

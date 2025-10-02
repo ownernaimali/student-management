@@ -3,11 +3,8 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {useState} from "react"
 
 export default function SearchTeacherPage() {
-const [teacher, setTeacher]= useState([]);
-  
   return (
     <main className="p-6 max-w-2xl mx-auto">
       <Card>

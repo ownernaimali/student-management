@@ -24,7 +24,7 @@ interface Teacher {
   qualification?: string;
   address?: string;
   otherInfo?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export default function UpdateTeacherPage() {
@@ -37,7 +37,7 @@ export default function UpdateTeacherPage() {
   useEffect(() => {
     const fetchTeacher = async () => {
       try {
-        const res = await fetch(`http://localhost:3001/api/teachers/${id}`);
+        const res = await fetch(`https://student-management-server-xwpm.onrender.com/api/teachers/${id}`);
         const data = await res.json();
 
         if (data.status === "success") {
@@ -64,7 +64,7 @@ export default function UpdateTeacherPage() {
     setResponse(null);
 
     try {
-      const res = await fetch(`http://localhost:3001/api/teachers/${id}`, {
+      const res = await fetch(`https://student-management-server-xwpm.onrender.com/api/teachers/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

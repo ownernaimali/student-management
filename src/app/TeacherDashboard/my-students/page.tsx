@@ -2,26 +2,11 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Search, Filter, Plus, Mail, Phone, MoreVertical, Download } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Plus, Mail, Phone, MoreVertical, Download } from "lucide-react";
 
-
-export default function MyStudents() {
-  const [students, setStudents] = useState([]);
-  const [filteredStudents, setFilteredStudents] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [selectedClass, setSelectedClass] = useState("all");
-  const [selectedStatus, setSelectedStatus] = useState("all");
-
-  // Fetch students from API
-  useEffect(() => {
-    const fetchStudents = async () => {
-      try {
-        const d = [
+const students = [
           {
             id: '1',
             name: 'John Doe',
@@ -100,73 +85,9 @@ export default function MyStudents() {
             parentPhone: '+1 234 567 8911',
             status: 'inactive'
           }
-        ]
-        setStudents(d);
-        setFilteredStudents(d);
-      } catch (error) {
-       
-      } finally {
-        setLoading(false);
-      }
-    };
+        ];
+export default function MyStudents() {
 
-    fetchStudents();
-  }, []);
-
-  // Filter students based on search term and filters
-  useEffect(() => {
-    let filtered = students;
-
-    // Search filter
-    if (searchTerm) {
-      filtered = filtered.filter(student =>
-        student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        student.rollNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        student.email.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    // Class filter
-    if (selectedClass !== "all") {
-      filtered = filtered.filter(student => student.className === selectedClass);
-    }
-
-    // Status filter
-    if (selectedStatus !== "all") {
-      filtered = filtered.filter(student => student.status === selectedStatus);
-    }
-
-    setFilteredStudents(filtered);
-  }, [searchTerm, selectedClass, selectedStatus, students]);
-
-  const getClassOptions = () => {
-    const classes = [...new Set(students.map(student => student.className))];
-    return classes.sort();
-  };
-
-  const getAttendanceColor = (attendance: number) => {
-    if (attendance >= 90) return "text-green-600";
-    if (attendance >= 75) return "text-orange-600";
-    return "text-red-600";
-  };
-
-  const getGradeColor = (grade: string) => {
-    if (grade.includes('A')) return "text-green-600 bg-green-50";
-    if (grade.includes('B')) return "text-blue-600 bg-blue-50";
-    if (grade.includes('C')) return "text-orange-600 bg-orange-50";
-    return "text-red-600 bg-red-50";
-  };
-
-  if (loading) {
-    return (
-      <div className="p-6 flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Loading students...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="p-6 space-y-6">
@@ -175,7 +96,7 @@ export default function MyStudents() {
         <div className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">My Students</h1>
           <p className="text-muted-foreground">
-            Manage and view all your students' information
+            Manage and view all your students information
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -231,63 +152,16 @@ export default function MyStudents() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-purple-600">
-              {getClassOptions().length}
+              5
             </div>
             <p className="text-xs text-muted-foreground">Different classes</p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Filters and Search */}
-      <Card>
-        <CardContent className="p-4">
-          <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-            <div className="flex flex-col sm:flex-row gap-4 flex-1 w-full">
-              <div className="relative flex-1 max-w-sm">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search students by name, roll number, or email..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-8"
-                />
-              </div>
-              
-              <select 
-                value={selectedClass}
-                onChange={(e) => setSelectedClass(e.target.value)}
-                className="h-10 px-3 py-2 border rounded-md text-sm bg-background"
-              >
-                <option value="all">All Classes</option>
-                {getClassOptions().map(className => (
-                  <option key={className} value={className}>Class {className}</option>
-                ))}
-              </select>
-
-              <select 
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value)}
-                className="h-10 px-3 py-2 border rounded-md text-sm bg-background"
-              >
-                <option value="all">All Status</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm">
-                <Filter className="h-4 w-4 mr-2" />
-                More Filters
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Students Grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {filteredStudents.length === 0 ? (
+        {students.length === 0 ? (
           <div className="col-span-full text-center py-12">
             <div className="text-muted-foreground">
              {/* <Users className="h-12 w-12 mx-auto mb-4 opacity-50" /> */}
@@ -296,7 +170,7 @@ export default function MyStudents() {
             </div>
           </div>
         ) : (
-          filteredStudents.map((student) => (
+          students.map((student) => (
             <Card key={student.id} className="overflow-hidden">
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
@@ -340,13 +214,13 @@ export default function MyStudents() {
                 {/* Academic Info */}
                 <div className="grid grid-cols-2 gap-4 pt-4 border-t">
                   <div className="text-center">
-                    <div className={`text-lg font-semibold ${getAttendanceColor(student.attendance)}`}>
+                    <div className={`text-lg font-semibold `}>
                       {student.attendance}%
                     </div>
                     <div className="text-xs text-muted-foreground">Attendance</div>
                   </div>
                   <div className="text-center">
-                    <div className={`text-lg font-semibold px-2 py-1 rounded ${getGradeColor(student.grade)}`}>
+                    <div className={`text-lg font-semibold px-2 py-1 rounded`}>
                       {student.grade}
                     </div>
                     <div className="text-xs text-muted-foreground">Grade</div>
