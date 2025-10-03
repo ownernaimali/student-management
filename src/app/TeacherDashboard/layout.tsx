@@ -9,12 +9,12 @@ interface DashboardLayoutProps {
   children: ReactNode;
 }
 
-export default async function TeacherDashboardLayout({ children }: DashboardLayoutProps) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
-  const user = cookieStore.get("user")?.value;
+export default  function TeacherDashboardLayout({ children }: DashboardLayoutProps) {
+  
+  const token = localStorage.getItem("token");       
+  const user = localStorage.getItem("user");
 
-  // Require both token and admin user
+  // Require both token and teacher user
   if (!token || user !== "teacher") {
     redirect("/");
   }

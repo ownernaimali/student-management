@@ -1,7 +1,6 @@
 import { ReactNode } from "react";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import SideArea from "@/components/common/SideArea";
 
@@ -9,10 +8,10 @@ interface DashboardLayoutProps {
   children: ReactNode;
 }
 
-export default async function AdminDashboardLayout({ children }: DashboardLayoutProps) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
-  const user = cookieStore.get("user")?.value;
+export default function AdminDashboardLayout({ children }: DashboardLayoutProps) {
+
+  const token = localStorage.getItem("token");
+  const user = localStorage.getItem("user");
 
   // Require both token and admin user
   if (!token || user !== "admin") {
