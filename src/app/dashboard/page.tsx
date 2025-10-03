@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, BookOpen, UserCheck, UserX, TrendingUp, Calendar } from "lucide-react";
 
-export default function TeacherDashboard() {
+export default function AdminDashboard() {
   const stats = [
     {
       title: "Total Students",

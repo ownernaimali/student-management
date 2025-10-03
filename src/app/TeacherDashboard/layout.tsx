@@ -1,7 +1,7 @@
+"use client";
 import { ReactNode } from "react";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import SideArea from "@/components/common/SideArea";
 
