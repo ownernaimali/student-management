@@ -1,3 +1,4 @@
+
 'use client'
 
 import { cn } from "@/lib/utils"
@@ -47,14 +48,17 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: trimmedEmail, password: trimmedPassword, role }),
-        credentials: "include",
-      });
+     });
 
       const data = await res.json();
       if (data.status === "success" ) {
         if (data.role === "admin" && role === 'admin') {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("role", data.role);
           router.push('/dashboard');
         } else {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("role", data.role);
           router.push('/TeacherDashboard');
         }
       } else {
@@ -123,7 +127,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
             <p className="text-sm text-red-600">{error || ""}</p>
             </div>
 
-      <Button type="submit" className="w-full"></Button>
+      <Button type="submit" className="w-full">Login</Button>
           </form>
         </CardContent>
       </Card>
