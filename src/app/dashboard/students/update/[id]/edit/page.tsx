@@ -76,14 +76,14 @@ export default function UpdateStudentPage() {
         setLoading(true);
         
         // Fetch classes
-        const classRes = await fetch("http://localhost:3001/api/classes");
+        const classRes = await fetch("https://student-management-server-xwpm.onrender.com/api/classes");
         const classData = await classRes.json();
         if (classRes.ok) {
           setClassInfo(classData.data);
         }
 
         // Fetch student
-        const studentRes = await fetch(`http://localhost:3001/api/students/${id}`);
+        const studentRes = await fetch(`https://student-management-server-xwpm.onrender.com/api/students/${id}`);
         const studentData = await studentRes.json();
         
         if (studentRes.ok) {
@@ -148,7 +148,7 @@ export default function UpdateStudentPage() {
 
     setSaving(true);
     try {
-      const res = await fetch(`http://localhost:3001/api/students/${id}`, {
+      const res = await fetch(`https://student-management-server-xwpm.onrender.com/api/students/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(student),

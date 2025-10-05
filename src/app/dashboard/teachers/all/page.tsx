@@ -44,7 +44,7 @@ export default function ViewTeachersPage() {
   
   useEffect(() => {
     try {
-      fetch("http://localhost:3001/api/teachers")
+      fetch("https://student-management-server-xwpm.onrender.com/api/teachers")
         .then(res => res.json())
         .then(data => {
           if (data.status === "success") {

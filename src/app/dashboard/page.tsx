@@ -70,7 +70,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     try {
       // Fetch real data from API if needed
-      fetch("http://localhost:3001/api/utils")
+      fetch("https://student-management-server-xwpm.onrender.com/api/utils")
       .then(res => res.json())
       .then(data => {
         if(data.status==="success") {

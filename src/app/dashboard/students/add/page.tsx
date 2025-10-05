@@ -50,7 +50,7 @@ export default function AddStudentPage() {
     const fetchClasses = async () => {
       try {
         const res = await fetch(
-          "http://localhost:3001/api/classes"
+          "https://student-management-server-xwpm.onrender.com/api/classes"
         );
         const data = await res.json();
 
@@ -105,7 +105,7 @@ export default function AddStudentPage() {
       setLoading(true); 
 
       const res = await fetch(
-        "http://localhost:3001/api/students",
+        "https://student-management-server-xwpm.onrender.com/api/students",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

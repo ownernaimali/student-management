@@ -80,7 +80,7 @@ export default function UpdateClassPage() {
       
       try {
         setLoadingClass(true);
-        const res = await fetch(`http://localhost:3001/api/classes/${classId}`);
+        const res = await fetch(`https://student-management-server-xwpm.onrender.com/api/classes/${classId}`);
         const data = await res.json();
 
         if (res.ok && data.status === "success") {
@@ -118,7 +118,7 @@ export default function UpdateClassPage() {
     const fetchTeachers = async () => {
       try {
         setLoadingTeachers(true);
-        const res = await fetch("http://localhost:3001/api/teachers");
+        const res = await fetch("https://student-management-server-xwpm.onrender.com/api/teachers");
         const data = await res.json();
         if (res.ok) {
           setTeachers(data.data); 
@@ -167,7 +167,7 @@ export default function UpdateClassPage() {
 
     try {
       setIsSubmitting(true);
-      const res = await fetch(`http://localhost:3001/api/classes/${classId}`, {
+      const res = await fetch(`https://student-management-server-xwpm.onrender.com/api/classes/${classId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(classData),

@@ -48,7 +48,7 @@ export default function ViewStudentsPage() {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const res = await fetch("http://localhost:3001/api/students");
+        const res = await fetch("https://student-management-server-xwpm.onrender.com/api/students");
         if (!res.ok) throw new Error("Failed to fetch students");
         const data = await res.json();
         if(data.status === 'success') {
