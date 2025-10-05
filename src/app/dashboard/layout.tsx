@@ -1,8 +1,8 @@
-"use client"
-import { ReactNode } from "react";
+"use client";
+import { ReactNode, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { redirect } from "next/navigation";
 import SideArea from "@/components/common/SideArea";
 
 interface DashboardLayoutProps {
@@ -10,26 +10,23 @@ interface DashboardLayoutProps {
 }
 
 export default function AdminDashboardLayout({ children }: DashboardLayoutProps) {
+  const router = useRouter();
 
-  const token = localStorage.getItem("token");
-  const user = localStorage.getItem("user");
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
 
-  // Require both token and admin user
-  if (!token || user !== "admin") {
-    redirect("/");
-  }
+    if (!token || role !== "admin") {
+      router.push("/");
+    }
+  }, [router]);
 
   return (
-    <SidebarProvider
-      style={{
-        "--sidebar-width": "calc(var(--spacing) * 72)",
-        "--header-height": "calc(var(--spacing) * 12)",
-      } as React.CSSProperties}
-    >
-      <SideArea />
+    <SidebarProvider>
+      <SiteHeader />
       <SidebarInset>
-        <SiteHeader />
-        <main>{children}</main>
+        <SideArea />
+       <main>{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );

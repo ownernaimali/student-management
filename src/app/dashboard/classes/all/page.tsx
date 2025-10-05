@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-
+import Link from "next/link";
 type ClassType = {
   _id: string;
-  name: string;
+  classLevel: string;
   subjects: string[];
   firstTeacher: { _id: string; name: string } | string;
   room: string;
@@ -22,7 +22,7 @@ export default function ViewClassesPage() {
     const fetchClasses = async () => {
       try {
         setLoading(true);
-        const res = await fetch("https://student-management-server-xwpm.onrender.com/api/classes");
+        const res = await fetch("http://localhost:3001/api/classes");
         const result = await res.json();
 
         if (res.ok && result.status === "success") {
@@ -44,7 +44,12 @@ export default function ViewClassesPage() {
     <main className="p-6 max-w-5xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">All Classes</h1>
 
-      {loading && <p>Loading classes...</p>}
+      {loading && <div className="p-6 flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Loading classes...</p>
+        </div>
+      </div>}
 
       {!loading && classes.length === 0 && (
         <p className="text-gray-500">No classes found.</p>
@@ -54,7 +59,7 @@ export default function ViewClassesPage() {
         {classes.map((cls) => (
           <Card key={cls._id}>
             <CardHeader>
-              <CardTitle>{cls.name}</CardTitle>
+              <CardTitle>{cls.classLevel}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {/* Subjects */}
@@ -93,9 +98,11 @@ export default function ViewClassesPage() {
 
               {/* Action buttons (future: edit, delete) */}
               <div className="pt-2 flex gap-2">
-                <Button variant="outline" size="sm">
+               <Link href={`/dashboard/classes/update/${cls._id}/edit`}>
+               <Button variant="outline" size="sm">
                   Edit
                 </Button>
+                </Link>
                 <Button variant="destructive" size="sm">
                   Delete
                 </Button>

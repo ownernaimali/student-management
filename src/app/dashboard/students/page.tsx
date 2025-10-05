@@ -26,12 +26,12 @@ const attendanceByClass = [
  
 export default function StudentDashboardPage() {
 const [totalStudents, setTotalStudents] = useState<number>(0);
-  // const [loading, setLoading] = useState(true);
+ const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const totalStudentsLength = async () => {
       try {
-        const res = await fetch("https://student-management-server-xwpm.onrender.com/api/totals/students");
+        const res = await fetch("http://localhost:3001/api/totals/students");
         if (!res.ok) {
           throw new Error("Failed to fetch total students");
         }
@@ -40,7 +40,7 @@ const [totalStudents, setTotalStudents] = useState<number>(0);
       } catch (err) {
         console.error("Error fetching students:", err);
       } finally {
-        // setLoading(false);
+        setLoading(false);
       }
     };
 
@@ -49,6 +49,18 @@ const [totalStudents, setTotalStudents] = useState<number>(0);
 // Calculate totals
 const totalPresent = attendanceByClass.reduce((sum, cls) => sum + cls.present, 0);
 const totalAbsent = attendanceByClass.reduce((sum, cls) => sum + cls.absent, 0);
+
+  if (loading) {
+    // loading state animation
+    return (
+      <div className="p-6 flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Loading student data...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <main className="p-6 space-y-6">

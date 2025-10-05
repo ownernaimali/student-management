@@ -15,30 +15,27 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
 
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import Link from "next/link"
 
 type Student = {
-  _id: string;
+  _id?: string;
   name: string;
   fatherName: string;
   motherName: string;
+  birthSerial: string;
   dob: string;
   mobile: string;
+  parentMobile: string;
   gender: string;
   classLevel: string;
-  previousSchool: string;
   address: string;
   otherInfo: string;
+  attendanceHistory: any[];
 };
+
+
 
 export default function ViewStudentsPage() {
   const [students, setStudents] = useState<Student[]>([]);
@@ -47,7 +44,7 @@ export default function ViewStudentsPage() {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const res = await fetch("https://student-management-server-xwpm.onrender.com/api/students");
+        const res = await fetch("http://localhost:3001/api/students");
         if (!res.ok) throw new Error("Failed to fetch students");
         const data = await res.json();
         if(data.status === 'success') {
@@ -69,13 +66,19 @@ export default function ViewStudentsPage() {
     studentsByClass[i] = students.filter(s => s.classLevel == i.toString());
   }
 
+  
   return (
     <main className="max-w-7xl mx-auto">
     <div className="text-lg font-bold my-4">
     Total Students: <span className="text-blue-600">{students.length}</span>
   </div>
       {loading ? (
-        <div className="text-center py-10 text-muted-foreground">Loading students...</div>
+        <div className="p-6 flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Loading students...</p>
+        </div>
+      </div>
       ) : (
         Object.entries(studentsByClass).map(([classLevel, classStudents]) => (
           <Card key={classLevel} className="px-0 my-[20px]">
@@ -109,6 +112,13 @@ export default function ViewStudentsPage() {
                           <TableCell>{s.classLevel}</TableCell>
                           <TableCell>{s.gender}</TableCell>
                           <TableCell>{s.mobile}</TableCell>
+                          <TableCell>
+                            <Link href={`/dashboard/students/update/${s._id}/edit`}><Button size="sm">Update</Button></Link>
+                            <Link href={`/dashboard/students/${s._id}`}><Button  size="sm">Disable</Button></Link>
+                            <Link href={`/dashboard/students/${s._id}`}><Button  size="sm">Info</Button></Link>
+                            </TableCell>
+
+                          {/*
                           <TableCell className="text-right">
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
@@ -130,6 +140,7 @@ export default function ViewStudentsPage() {
                               </DropdownMenuContent>
                             </DropdownMenu>
                           </TableCell>
+                          */}
                         </TableRow>
                       ))
                     ) : (

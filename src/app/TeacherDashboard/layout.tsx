@@ -1,34 +1,42 @@
 "use client";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { redirect } from "next/navigation";
 import SideArea from "@/components/common/SideArea";
 
 interface DashboardLayoutProps {
   children: ReactNode;
 }
 
-export default  function TeacherDashboardLayout({ children }: DashboardLayoutProps) {
-  
-  const token = localStorage.getItem("token");       
-  const user = localStorage.getItem("user");
+export default function AdminDashboardLayout({ children }: DashboardLayoutProps) {
+  const router = useRouter();
+  const [isChecking, setIsChecking] = useState(true);
 
-  // Require both token and teacher user
-  if (!token || user !== "teacher") {
-    redirect("/");
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+
+    if (!token || role !== "teacher") {
+        router.push("/"); 
+    } else {
+      setIsChecking(false);
+    }
+  }, [router]);
+
+  if (isChecking) {
+    return (
+      <div className="flex items-center justify-center h-screen text-lg font-medium">
+        Checking access...
+      </div>
+    );
   }
 
   return (
-    <SidebarProvider
-      style={{
-        "--sidebar-width": "calc(var(--spacing) * 72)",
-        "--header-height": "calc(var(--spacing) * 12)",
-      } as React.CSSProperties}
-    >
-      <SideArea />
+    <SidebarProvider>
+      <SiteHeader />
       <SidebarInset>
-        <SiteHeader />
+        <SideArea />
         <main>{children}</main>
       </SidebarInset>
     </SidebarProvider>

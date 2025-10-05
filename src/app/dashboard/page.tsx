@@ -1,74 +1,110 @@
+"use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, BookOpen, UserCheck, UserX, TrendingUp, Calendar } from "lucide-react";
-
+import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 export default function AdminDashboard() {
   const stats = [
     {
+      id: "totalStudents",
       title: "Total Students",
-      value: "142",
       description: "Across all classes",
       icon: Users,
       color: "text-blue-600",
       bgColor: "bg-blue-50"
     },
     {
-      title: "Total My Classes",
-      value: "8",
+      id: "totalClass",
+      title: "Total Classes",
       description: "Active courses",
       icon: BookOpen,
       color: "text-green-600",
       bgColor: "bg-green-50"
     },
     {
+      id: "totalPresent",
       title: "Total Present",
-      value: "128",
       description: "Today's attendance",
       icon: UserCheck,
       color: "text-emerald-600",
       bgColor: "bg-emerald-50"
     },
     {
+      id: "totalAbsent",
       title: "Total Absent",
-      value: "14",
       description: "Today's attendance",
       icon: UserX,
       color: "text-red-600",
       bgColor: "bg-red-50"
     },
     {
+      id: "attendanceRate",
       title: "Attendance Rate",
-      value: "90.1%",
-      description: "This week average",
+      description: "This day average",
       icon: TrendingUp,
       color: "text-purple-600",
       bgColor: "bg-purple-50"
-    },
-    {
-      title: "Upcoming Classes",
-      value: "3",
-      description: "Today's schedule",
-      icon: Calendar,
-      color: "text-orange-600",
-      bgColor: "bg-orange-50"
     }
   ];
 
-  const classStats = [
-    { name: "Mathematics", students: 28, present: 25, absent: 3 },
-    { name: "Science", students: 32, present: 30, absent: 2 },
-    { name: "English", students: 26, present: 24, absent: 2 },
-    { name: "History", students: 24, present: 22, absent: 2 },
-    { name: "Physics", students: 30, present: 27, absent: 3 },
-  ];
+  type utilsDataType = {
+  overall: {
+    date: string;
+    totalClass: number;
+    totalStudents: number;
+    totalPresent: number;
+    totalAbsent: number;
+    attendanceRate: number;
+  };
+  classwise: Array<{
+    classLevel?: string;
+    students?: number;
+    present?: number;
+    absent?: number;
+    attendanceRate?: number;
+  }>;
+};
+  const [utilsData, setUtilsData] = useState<utilsDataType | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    try {
+      // Fetch real data from API if needed
+      fetch("http://localhost:3001/api/utils")
+      .then(res => res.json())
+      .then(data => {
+        if(data.status==="success") {
+         setUtilsData(data.data); 
+        }
+      })
+    } catch {
+      Swal.fire("Error", "Server Error? Reload Page", "error");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  if (loading) {
+    // loading state animation
+    return (
+      <div className="p-6 flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Loading student data...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="py-6 px-2  space-y-6">
       {/* Page Header */}
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Teacher Dashboard</h1>
-        <p className="text-muted-foreground">
-          Welcome back! Here&#39;;s an overview of your classes and students.
+        <h1 className="text-3xl font-bold tracking-tight">Admin Dashboard</h1>
+        <p className="text-muted-foreground mb-0">
+          Welcome back! Here&#39;s an overview of your Teacher, classes and students.
         </p>
+        <p className="text-muted-foreground mt-0 text-right">{new Date().toLocaleDateString('en-US', {weekday: 'long', day: 'numeric',  month: 'long', year: 'numeric'})}</p>
       </div>
 
       {/* Main Stats Grid */}
@@ -84,13 +120,69 @@ export default function AdminDashboard() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
+                <div className="text-2xl font-bold">
+                  {(() => {
+                    if (!utilsData) return "-";
+                    switch (stat.id) {
+                      case "totalStudents":
+                        return utilsData.overall.totalStudents;
+                      case "totalClass":
+                        return utilsData.overall.totalClass;
+                      case "totalPresent":
+                        return utilsData.overall.totalPresent;
+                      case "totalAbsent":
+                        return utilsData.overall.totalAbsent;
+                      case "attendanceRate":
+                        return utilsData.overall.attendanceRate + "%";
+                      default:
+                        return "-";
+                    }
+                  })()}
+                </div>
               <p className="text-xs text-muted-foreground">
                 {stat.description}
               </p>
             </CardContent>
           </Card>
         ))}
+        
+      <Card className="relative overflow-hidden">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Upcoming Classes
+              </CardTitle>
+              <div className={`p-2 rounded-lg bg-orange-50`}>
+                <Calendar className={`h-4 w-4 text-orange-600`} />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">3</div>
+              <p className="text-xs text-muted-foreground">
+                Upcoming Classes
+              </p>
+            </CardContent>
+          </Card>
+
+        {/* {
+        
+        <Card className="relative overflow-hidden">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Upcoming Classes
+              </CardTitle>
+              <div className={`p-2 rounded-lg bg-orange-50`}>
+                <Calendar className={`h-4 w-4 text-orange-600`} />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">3</div>
+              <p className="text-xs text-muted-foreground">
+                Upcoming Classes
+              </p>
+            </CardContent>
+          </Card>
+        } */}
+        
       </div>
 
       {/* Class-wise Statistics */}
@@ -102,10 +194,10 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {classStats.map((classStat, index) => (
+              {utilsData?.classwise?.map((classStat, index) => (
                 <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
                   <div className="space-y-1">
-                    <h4 className="font-semibold">{classStat.name}</h4>
+                    <h4 className="font-semibold">Class {classStat.classLevel} </h4>
                     <div className="flex space-x-4 text-sm text-muted-foreground">
                       <span>Total: {classStat.students}</span>
                       <span className="text-emerald-600">Present: {classStat.present}</span>
@@ -114,7 +206,7 @@ export default function AdminDashboard() {
                   </div>
                   <div className="text-right">
                     <div className="font-semibold">
-                      {Math.round((classStat.present / classStat.students) * 100)}%
+                      {classStat.attendanceRate}%
                     </div>
                     <div className="text-xs text-muted-foreground">Attendance</div>
                   </div>

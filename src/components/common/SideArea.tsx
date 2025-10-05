@@ -43,7 +43,7 @@ export default function SideArea() {
     user: baseUser,
     navMain: [
       { title: "Dashboard", url: "/TeacherDashboard", icon: IconDashboard },
-      { title: "Attendence", url: "/TeacherDashboard/attend", icon: IconDashboard },
+      { title: "Attendence", url: "/TeacherDashboard/attendance", icon: IconDashboard },
       { title: "My Students", url: "/TeacherDashboard/my-students", icon: IconSchool },
       { title: "My Classes", url: "/TeacherDashboard/classes", icon: IconBook },
       { title: "My Activity", url: "/TeacherDashboard/activity", icon: IconActivity },

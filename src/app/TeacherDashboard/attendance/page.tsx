@@ -37,7 +37,7 @@ export default function StudentAttendance() {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await fetch(`https://student-management-server-xwpm.onrender.com/api/students/class/${classLevel}`);
+        const response = await fetch(`http://localhost:3001/api/students/class/${classLevel}`);
         if (!response.ok) {
           throw new Error('Failed to fetch students');
         }
@@ -59,7 +59,7 @@ export default function StudentAttendance() {
 const handleAttendance = (id: string, status: string) => {
 
 try {
-fetch(`https://student-management-server-xwpm.onrender.com/api/students/attendance/${id}`, {
+fetch(`http://localhost:3001/api/students/attendance/${id}`, {
   method: "PUT",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({ status }),

@@ -37,7 +37,7 @@ export default function UpdateTeacherPage() {
   useEffect(() => {
     const fetchTeacher = async () => {
       try {
-        const res = await fetch(`https://student-management-server-xwpm.onrender.com/api/teachers/${id}`);
+        const res = await fetch(`http://localhost:3001/api/teachers/${id}`);
         const data = await res.json();
 
         if (data.status === "success") {
@@ -64,7 +64,7 @@ export default function UpdateTeacherPage() {
     setResponse(null);
 
     try {
-      const res = await fetch(`https://student-management-server-xwpm.onrender.com/api/teachers/${id}`, {
+      const res = await fetch(`http://localhost:3001/api/teachers/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -75,7 +75,6 @@ export default function UpdateTeacherPage() {
 
       if (res.ok && data.status === "success") {
         setResponse(`Teacher update successfully!`);
-        console.log(data);
         Swal.fire({
           icon: "success",
           title: "Teacher Updated",

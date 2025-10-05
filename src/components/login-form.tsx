@@ -44,7 +44,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
     }
 
     try {
-      const res = await fetch("https://student-management-server-xwpm.onrender.com/api/auth/login", {
+      const res = await fetch("http://localhost:3001/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: trimmedEmail, password: trimmedPassword, role }),

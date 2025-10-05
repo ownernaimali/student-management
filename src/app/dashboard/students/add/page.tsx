@@ -38,9 +38,10 @@ export default function AddStudentPage() {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
+  const [loadingAnimation, setLoadingAnimation] = useState(true); 
 
   // Classes state
-  type ClassType = { _id: string; name: string };
+  type ClassType = { _id: string; classLevel: string };
   const [classes, setClasses] = useState<ClassType[]>([]);
   const [loadingClasses, setLoadingClasses] = useState(true);
 
@@ -49,7 +50,7 @@ export default function AddStudentPage() {
     const fetchClasses = async () => {
       try {
         const res = await fetch(
-          "https://student-management-server-xwpm.onrender.com/api/classes"
+          "http://localhost:3001/api/classes"
         );
         const data = await res.json();
 
@@ -62,6 +63,7 @@ export default function AddStudentPage() {
         console.error("Error fetching classes:", err);
       } finally {
         setLoadingClasses(false);
+        setLoadingAnimation(false); 
       }
     };
 
@@ -103,7 +105,7 @@ export default function AddStudentPage() {
       setLoading(true); 
 
       const res = await fetch(
-        "https://student-management-server-xwpm.onrender.com/api/students",
+        "http://localhost:3001/api/students",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -116,7 +118,7 @@ export default function AddStudentPage() {
       if (res.ok) {
         Swal.fire(
           "Success",
-          `Student added. <p style="font-size: 12px; margin-top: 2px;">(ID: ${data.id})</p>`,
+          `Student added.`,
           "success"
         );
         setStudent({
@@ -146,6 +148,17 @@ export default function AddStudentPage() {
     }
   };
 
+  if (loadingAnimation) {
+    return (
+      <div className="p-6 flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Loading students...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <main className="p-6 max-w-4xl mx-auto">
       <Card>
@@ -170,8 +183,8 @@ export default function AddStudentPage() {
               <SelectContent>
                 {classes.length > 0 ? (
                   classes.map((cls) => (
-                    <SelectItem key={cls._id} value={cls.name}>
-                      Class {cls.name}
+                    <SelectItem key={cls._id} value={cls.classLevel}>
+                      Class {cls.classLevel}
                     </SelectItem>
                   ))
                 ) : (
@@ -235,6 +248,32 @@ export default function AddStudentPage() {
                 <p className="text-sm text-red-500 mt-1">{errors.mobile}</p>
               )}
             </div>
+            <div className="md:col-span-2">
+              <Label>
+                Parent Mobile Number
+              </Label>
+              <Input
+                placeholder="Enter Parent Mobile number"
+                value={student.parentMobile}
+                onChange={(e) => handleChange("parentMobile", e.target.value)}
+              />
+              {errors.parentMobile && (
+                <p className="text-sm text-red-500 mt-1">{errors.parentMobile}</p>
+              )}
+            </div>
+              <div className="md:col-span-2">
+              <Label>
+                Birth Serial No
+              </Label>
+              <Input
+                placeholder="Enter birth serial number"
+                value={student.birthSerial}
+                onChange={(e) => handleChange("birthSerial", e.target.value)}
+              />
+              {errors.birthSerial && (
+                <p className="text-sm text-red-500 mt-1">{errors.mobile}</p>
+              )}
+            </div>
             <div>
               <Label>Date of Birth</Label>
               <Input
@@ -265,19 +304,6 @@ export default function AddStudentPage() {
               )}
             </div>
             <div className="md:col-span-2">
-              <Label>
-                Birth Serial No
-              </Label>
-              <Input
-                placeholder="Enter birth serial number"
-                value={student.birthSerial}
-                onChange={(e) => handleChange("birthSerial", e.target.value)}
-              />
-              {errors.birthSerial && (
-                <p className="text-sm text-red-500 mt-1">{errors.mobile}</p>
-              )}
-            </div>
-            <div className="md:col-span-2">
               <Label>Address</Label>
               <Textarea
                 placeholder="Enter address"
@@ -296,25 +322,12 @@ export default function AddStudentPage() {
                 onChange={(e) => handleChange("otherInfo", e.target.value)}
               />
             </div>
-            <div className="md:col-span-2">
-              <Label>
-                Parent Mobile Number
-              </Label>
-              <Input
-                placeholder="Enter Parent Mobile number"
-                value={student.parentMobile}
-                onChange={(e) => handleChange("parentMobile", e.target.value)}
-              />
-              {errors.parentMobile && (
-                <p className="text-sm text-red-500 mt-1">{errors.parentMobile}</p>
-              )}
-            </div>
           </div>
 
           {/* Submit */}
           <div className="pt-4">
             <Button onClick={handleSubmit} disabled={loading}>
-              {loading ? "Submitting..." : "Submit Student"}
+              {loading ? "Submitting..." : "Add Student"}
             </Button>
           </div>
         </CardContent>
