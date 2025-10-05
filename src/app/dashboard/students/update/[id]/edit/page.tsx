@@ -16,6 +16,10 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Swal from "sweetalert2";
 
+type AttendanceRecord = {
+date: string;
+status: "present" | "absent" | string;
+}
 type Student = {
   _id: string;
   classLevel?: string;
@@ -30,7 +34,7 @@ type Student = {
   previousSchool?: string;
   address?: string;
   otherInfo?: string;
-  attendanceHistory?: any[];
+  attendanceHistory?: AttendanceRecord[];
   [key: string]: unknown;
 };
 

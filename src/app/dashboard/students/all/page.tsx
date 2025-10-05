@@ -18,6 +18,10 @@ import {
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link"
+type AttendanceRecord = {
+	date: string;
+	status: string;
+}
 
 type Student = {
   _id?: string;
@@ -32,7 +36,7 @@ type Student = {
   classLevel: string;
   address: string;
   otherInfo: string;
-  attendanceHistory: any[];
+  attendanceHistory: AttendanceRecord[];
 };
 
 

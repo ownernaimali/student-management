@@ -24,7 +24,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Key, MoreHorizontal, Pencil, Trash2, Users } from "lucide-react";
+import {  MoreHorizontal, Pencil, Trash2, Users } from "lucide-react";
 import Link from "next/link";
 
 
@@ -124,6 +124,7 @@ export default function ViewTeachersPage() {
                             <Pencil className="w-4 h-4 mr-2" /> Edit
                           </DropdownMenuItem>
                           </Link>
+
                           <DropdownMenuItem
                             className="cursor-pointer text-red-600 focus:text-red-600"
                           >
