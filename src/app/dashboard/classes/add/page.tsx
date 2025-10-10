@@ -246,7 +246,7 @@ export default function AddClassPage() {
                 First Teacher <span className="text-red-500">*</span>
               </Label>
               <Select
-                value={classData.firstTeacher}
+                value={classData.firstTeacher || " "}
                 onValueChange={(val) => handleChange("firstTeacher", val)}
                 required
               >
@@ -262,7 +262,7 @@ export default function AddClassPage() {
                 </SelectTrigger>
                 <SelectContent>
                   {teachers.map((teacher, index) => (
-                    <SelectItem key={index} value={teacher.name}>
+                    <SelectItem key={index} value={teacher.name || " "}>
                       {teacher.name}
                     </SelectItem>
                   ))}

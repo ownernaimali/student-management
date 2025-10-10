@@ -1,9 +1,6 @@
 "use client";
 import { ReactNode, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { SiteHeader } from "@/components/site-header";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import SideArea from "@/components/common/SideArea";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -33,12 +30,6 @@ export default function AdminDashboardLayout({ children }: DashboardLayoutProps)
   }
 
   return (
-    <SidebarProvider>
-      <SiteHeader />
-      <SidebarInset>
-        <SideArea />
         <main>{children}</main>
-      </SidebarInset>
-    </SidebarProvider>
   );
 }

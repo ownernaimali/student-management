@@ -1,7 +1,5 @@
 "use client";
 import { usePathname } from "next/navigation";
-
-import { AppSidebar } from "@/components/app-sidebar";
 import {
   IconDashboard,
   IconSchool,
@@ -30,6 +28,7 @@ export default function SideArea() {
       { title: "Students", url: "/dashboard/students", icon: IconSchool },
       { title: "Teachers", url: "/dashboard/teachers", icon: IconChalkboard },
       { title: "Classes", url: "/dashboard/classes", icon: IconBook },
+      { title: "Exam", url: "/dashboard/exam", icon: IconBook },
       { title: "Activity", url: "/dashboard/activity", icon: IconActivity },
     ],
     navSecondary: [
@@ -57,5 +56,5 @@ export default function SideArea() {
 
   const data = isTeacherDashboard ? teacherNav : studentNav;
 
-  return <AppSidebar data={data} variant="inset" />;
+  return <p>nav bar</p>
 }
