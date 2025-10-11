@@ -5,7 +5,6 @@ import {
   CardAction,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -35,7 +34,7 @@ export default function ViewExamPage() {
   const [exams, setExams] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/exams")
+    fetch("https://student-management-server-xwpm.onrender.com/api/exams")
       .then((res) => res.json())
       .then((data) => {
         if (data.status === "success") {

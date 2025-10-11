@@ -7,7 +7,7 @@ export default function Dashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Student Analysis Dashboard</h1>
-              <p className="text-gray-600 mt-2">Welcome back, Dr. Smith! Here's your class overview.</p>
+              <p className="text-gray-600 mt-2">Welcome back, Dr. Smith! Here&#39;s your class overview.</p>
             </div>
             <div className="flex items-center space-x-4">
               <div className="relative">

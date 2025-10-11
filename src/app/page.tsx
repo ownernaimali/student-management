@@ -10,7 +10,6 @@ import {
   X, 
   BookOpen, 
   Users, 
-  Calendar,
   Star,
   Phone,
   Mail,

@@ -29,7 +29,7 @@ export default function AddExamPage() {
 
   // Fetch classes
   useEffect(() => {
-    fetch("http://localhost:3001/api/classes")
+    fetch("https://student-management-server-xwpm.onrender.com/api/classes")
       .then((res) => res.json())
       .then((data) => {
         if (data.status === "success") {
@@ -102,7 +102,7 @@ export default function AddExamPage() {
     }
 
     // ✅ Send data to backend
-    fetch("http://localhost:3001/api/exams", {
+    fetch("https://student-management-server-xwpm.onrender.com/api/exams", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
