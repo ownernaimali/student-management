@@ -188,7 +188,7 @@ export default function HomePage() {
             <Button 
               size="lg" 
               variant="outline" 
-              className="border-2 border-white text-white hover:bg-white hover:text-blue-800 font-bold"
+              className="border-2 border-white bg-blue-800 text-white hover:bg-white hover:text-blue-800 font-bold"
             >
               Learn More
             </Button>
@@ -354,7 +354,7 @@ export default function HomePage() {
             <Button 
               size="lg" 
               variant="outline" 
-              className="border-2 border-white text-white hover:bg-white hover:text-blue-800 font-bold"
+              className="border-2 border-white text-white bg-blue-800 hover:bg-white hover:text-blue-800 font-bold"
             >
               Contact Us
             </Button>

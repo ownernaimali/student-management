@@ -87,7 +87,7 @@ export default function AdminDashboard() {
   if (loading) {
     // loading state animation
     return (
-      <div className="p-6 flex items-center justify-center min-h-screen">
+      <div className="p-6 flex items-center justify-center min-h-[95dvh]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
           <p className="mt-4 text-muted-foreground">Loading student data...</p>
@@ -97,7 +97,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="py-6 px-2  space-y-6">
+    <div className="py-6 px-2 mt-20 space-y-6">
       {/* Page Header */}
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">Admin Dashboard</h1>

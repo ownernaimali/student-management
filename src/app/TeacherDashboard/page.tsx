@@ -1,3 +1,257 @@
+export default function Dashboard() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Student Analysis Dashboard</h1>
+              <p className="text-gray-600 mt-2">Welcome back, Dr. Smith! Here's your class overview.</p>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search students..."
+                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm"
+                />
+              </div>
+              <button className="bg-white/80 backdrop-blur-sm border border-gray-300 rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-white transition-colors">
+                Filter
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Stats Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 backdrop-blur-sm">
+            <div className="flex items-center">
+              <div className="p-3 rounded-xl bg-blue-100 text-blue-600">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Total Students</p>
+                <p className="text-2xl font-bold text-gray-900">42</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 backdrop-blur-sm">
+            <div className="flex items-center">
+              <div className="p-3 rounded-xl bg-green-100 text-green-600">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Average Grade</p>
+                <p className="text-2xl font-bold text-gray-900">84.5%</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 backdrop-blur-sm">
+            <div className="flex items-center">
+              <div className="p-3 rounded-xl bg-orange-100 text-orange-600">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Attendance Rate</p>
+                <p className="text-2xl font-bold text-gray-900">92.3%</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 backdrop-blur-sm">
+            <div className="flex items-center">
+              <div className="p-3 rounded-xl bg-purple-100 text-purple-600">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Assignments</p>
+                <p className="text-2xl font-bold text-gray-900">24/28</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          {/* Left Column - Charts */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Performance Chart */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-semibold text-gray-900">Performance Overview</h3>
+                <select className="text-sm border border-gray-300 rounded-lg px-3 py-1 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                  <option>This Month</option>
+                  <option>Last Month</option>
+                  <option>This Semester</option>
+                </select>
+              </div>
+              <div className="h-64 flex items-end justify-between space-x-2">
+                {[65, 80, 45, 90, 75, 85, 70, 95, 60, 78, 82, 88].map((value, index) => (
+                  <div key={index} className="flex-1 flex flex-col items-center">
+                    <div
+                      className="w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg transition-all hover:from-blue-600 hover:to-blue-500"
+                      style={{ height: `${value}%` }}
+                    ></div>
+                    <span className="text-xs text-gray-500 mt-2">W{index + 1}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Students Table */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-900">Student Performance</h3>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grade</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Attendance</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {[
+                      { name: 'Emma Johnson', grade: 94, attendance: 98, status: 'Excellent' },
+                      { name: 'Michael Brown', grade: 87, attendance: 95, status: 'Good' },
+                      { name: 'Sarah Wilson', grade: 92, attendance: 96, status: 'Excellent' },
+                      { name: 'James Davis', grade: 78, attendance: 88, status: 'Average' },
+                      { name: 'Lisa Miller', grade: 85, attendance: 92, status: 'Good' },
+                    ].map((student, index) => (
+                      <tr key={index} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="flex-shrink-0 h-10 w-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                              {student.name.split(' ').map(n => n[0]).join('')}
+                            </div>
+                            <div className="ml-4">
+                              <div className="text-sm font-medium text-gray-900">{student.name}</div>
+                              <div className="text-sm text-gray-500">Grade 10-A</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">{student.grade}%</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">{student.attendance}%</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                            student.status === 'Excellent' ? 'bg-green-100 text-green-800' :
+                            student.status === 'Good' ? 'bg-blue-100 text-blue-800' :
+                            'bg-yellow-100 text-yellow-800'
+                          }`}>
+                            {student.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column - Sidebar */}
+          <div className="space-y-6">
+            {/* Attendance Chart */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-6">Attendance Distribution</h3>
+              <div className="space-y-4">
+                {[
+                  { range: '90-100%', percentage: 65, color: 'bg-green-500' },
+                  { range: '80-89%', percentage: 25, color: 'bg-blue-500' },
+                  { range: '70-79%', percentage: 8, color: 'bg-yellow-500' },
+                  { range: 'Below 70%', percentage: 2, color: 'bg-red-500' },
+                ].map((item, index) => (
+                  <div key={index} className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-700">{item.range}</span>
+                    <div className="flex items-center space-x-3">
+                      <div className="w-24 bg-gray-200 rounded-full h-2">
+                        <div
+                          className={`h-2 rounded-full ${item.color} transition-all duration-300`}
+                          style={{ width: `${item.percentage}%` }}
+                        ></div>
+                      </div>
+                      <span className="text-sm text-gray-600 w-8">{item.percentage}%</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Recent Activity */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-6">Recent Activity</h3>
+              <div className="space-y-4">
+                {[
+                  { action: 'Assignment submitted', student: 'Emma Johnson', time: '2 hours ago', type: 'submission' },
+                  { action: 'Grade updated', student: 'Michael Brown', time: '4 hours ago', type: 'grade' },
+                  { action: 'Attendance marked', student: 'Sarah Wilson', time: '1 day ago', type: 'attendance' },
+                  { action: 'New assignment', student: 'All students', time: '2 days ago', type: 'assignment' },
+                ].map((activity, index) => (
+                  <div key={index} className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div className={`flex-shrink-0 w-2 h-2 mt-2 rounded-full ${
+                      activity.type === 'submission' ? 'bg-green-500' :
+                      activity.type === 'grade' ? 'bg-blue-500' :
+                      activity.type === 'attendance' ? 'bg-orange-500' : 'bg-purple-500'
+                    }`}></div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-900">{activity.action}</p>
+                      <p className="text-sm text-gray-500">{activity.student}</p>
+                      <p className="text-xs text-gray-400 mt-1">{activity.time}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl shadow-sm p-6 text-white">
+              <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
+              <div className="grid grid-cols-2 gap-3">
+                <button className="bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg p-3 text-sm font-medium transition-all transform hover:scale-105">
+                  Add Grade
+                </button>
+                <button className="bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg p-3 text-sm font-medium transition-all transform hover:scale-105">
+                  Mark Attendance
+                </button>
+                <button className="bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg p-3 text-sm font-medium transition-all transform hover:scale-105">
+                  New Assignment
+                </button>
+                <button className="bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-lg p-3 text-sm font-medium transition-all transform hover:scale-105">
+                  Generate Report
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+/*
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, BookOpen, UserCheck, UserX, TrendingUp, Calendar } from "lucide-react";
 
@@ -63,7 +317,6 @@ export default function TeacherDashboard() {
 
   return (
     <div className="p-6 space-y-6">
-      {/* Page Header */}
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">Teacher Dashboard</h1>
         <p className="text-muted-foreground">
@@ -71,7 +324,6 @@ export default function TeacherDashboard() {
         </p>
       </div>
 
-      {/* Main Stats Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {stats.map((stat) => (
           <Card key={stat.title} className="relative overflow-hidden">
@@ -93,9 +345,7 @@ export default function TeacherDashboard() {
         ))}
       </div>
 
-      {/* Class-wise Statistics */}
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* Class Attendance Summary */}
         <Card>
           <CardHeader>
             <CardTitle>Class-wise Attendance</CardTitle>
@@ -124,7 +374,6 @@ export default function TeacherDashboard() {
           </CardContent>
         </Card>
 
-        {/* Quick Stats */}
         <Card>
           <CardHeader>
             <CardTitle>Quick Statistics</CardTitle>
@@ -150,7 +399,6 @@ export default function TeacherDashboard() {
                 </div>
               </div>
               
-              {/* Attendance Progress */}
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span>Overall Attendance Rate</span>
@@ -174,3 +422,4 @@ export default function TeacherDashboard() {
     </div>
   );
 }
+*/

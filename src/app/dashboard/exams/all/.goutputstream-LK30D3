@@ -1,0 +1,105 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+
+export default function ViewExamPage() {
+  const [exams, setExams] = useState([]);
+  const [expandedSubjects, setExpandedSubjects] = useState({}); // track open subjects
+
+  useEffect(() => {
+    fetch("http://localhost:3001/api/exams")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "success") {
+          setExams(data.data);
+        }
+      })
+      .catch((e) => console.error(e));
+  }, []);
+
+  if (!exams.length) {
+    return <p className="p-6 text-center text-gray-500">No exams found.</p>;
+  }
+
+  const formatTime = (time24) => {
+    if (!time24) return "";
+    const [h, m] = time24.split(":");
+    const hour = parseInt(h);
+    const ampm = hour >= 12 ? "PM" : "AM";
+    const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+    return `${hour12}:${m} ${ampm}`;
+  };
+
+  const toggleSubject = (classIdx, subject) => {
+    setExpandedSubjects((prev) => ({
+      ...prev,
+      [`${classIdx}-${subject}`]: !prev[`${classIdx}-${subject}`],
+    }));
+  };
+
+  return (
+    <main className="p-6 max-w-6xl mx-auto space-y-8">
+      {exams.map((exam, classIdx) => (
+        <Card key={classIdx} className="bg-white shadow">
+          <CardHeader className="border-b">
+            <CardTitle>Class {exam.classLevel}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {Object.entries(exam.exams).map(([subject, details], subIdx) => {
+                const isExpanded =
+                  expandedSubjects[`${classIdx}-${subject}`] || false;
+
+                return (
+                  <div
+                    key={subIdx}
+                    className="border rounded-lg bg-gray-50 overflow-hidden shadow-sm"
+                  >
+                    <button
+                      className="w-full px-4 py-2 text-left bg-sky-100 hover:bg-sky-200 font-semibold"
+                      onClick={() => toggleSubject(classIdx, subject)}
+                    >
+                      {subject} {isExpanded ? "▲" : "▼"}
+                    </button>
+
+                    {isExpanded && (
+                      <div className="p-4 text-gray-700 space-y-1 text-sm">
+                        <p>
+                          <strong>Date:</strong> {details.date}
+                        </p>
+                        <p>
+                          <strong>Marks:</strong> {details.marks}
+                        </p>
+                        <p>
+                          <strong>Start Time:</strong> {formatTime(details.startTime)}
+                        </p>
+                        <p>
+                          <strong>End Time:</strong> {formatTime(details.endTime)}
+                        </p>
+                        <p>
+                          <strong>Duration:</strong> {details.duration}
+                        </p>
+                        {details.notes && (
+                          <p>
+                            <strong>Notes:</strong> {details.notes}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </main>
+  );
+}

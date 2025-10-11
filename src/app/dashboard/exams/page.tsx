@@ -47,9 +47,9 @@ export default function ExamDashboardPage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <h2 className="text-2xl font-bold">Exam Dashboard</h2>
         <div className="flex gap-2">
-          <Button><Link href="/dashboard/exam/add">Add Exam</Link></Button>
-          <Button variant="outline"><Link href="/dashboard/exam/update">Update Exam</Link></Button>
-          <Button variant="outline"><Link href="/dashboard/exam/all">All</Link></Button>
+          <Button><Link href="/dashboard/exams/add">Add Exam</Link></Button>
+          <Button variant="outline"><Link href="/dashboard/exams/update">Update Exam</Link></Button>
+          <Button variant="outline"><Link href="/dashboard/exams/all">All</Link></Button>
         </div>
       </div>
 

@@ -65,11 +65,11 @@ export default function ViewStudentsPage() {
   }, []);
 
   // Group students by class level
-  const studentsByClass: Record<string, Student[]> = {};
-  for (let i = 1; i <= 5; i++) {
-    studentsByClass[i] = students.filter(s => s.classLevel == i.toString());
-  }
-
+const studentsByClass = students.reduce((acc, s) => {
+  if (!acc[s.classLevel]) acc[s.classLevel] = [];
+  acc[s.classLevel].push(s);
+  return acc;
+}, {});
   
   return (
     <main className="max-w-7xl mx-auto">

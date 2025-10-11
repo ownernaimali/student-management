@@ -1,12 +1,13 @@
 "use client";
 import { ReactNode, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Nav from "@/components/common/Nav"
 
 interface DashboardLayoutProps {
   children: ReactNode;
 }
 
-export default function AdminDashboardLayout({ children }: DashboardLayoutProps) {
+export default function TeacherDashboardLayout({ children }: DashboardLayoutProps) {
   const router = useRouter();
   const [isChecking, setIsChecking] = useState(true);
 
@@ -30,6 +31,9 @@ export default function AdminDashboardLayout({ children }: DashboardLayoutProps)
   }
 
   return (
-        <main>{children}</main>
+   <main>
+	<Nav />
+	<section className="mt-20">{children}</section>
+  </main>
   );
 }
