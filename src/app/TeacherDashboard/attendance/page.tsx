@@ -38,7 +38,7 @@ export default function StudentAttendance() {
   const [absent,setAbsent] = useState(0);
 
 useEffect(() => {
-    fetch("http://localhost:3001/api/teachers/token", {
+    fetch("https://student-management-server-xwpm.onrender.com/api/teachers/token", {
     headers: {authorization: `Beare ${localStorage.getItem("token")}`}
     })
     .then(res => res.json())
@@ -51,7 +51,7 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
-    fetch("http://localhost:3001/api/classes")
+    fetch("https://student-management-server-xwpm.onrender.com/api/classes")
     .then(res => res.json())
     .then(data => {
 		if(data.status==="success") {
@@ -69,7 +69,7 @@ useEffect(() => {
   // Fetch students from API
   useEffect(() => {
     const fetchStudents = async () => {
-fetch("http://localhost:3001/api/utils")
+fetch("https://student-management-server-xwpm.onrender.com/api/utils")
     .then(res => res.json())
     .then(data => {
         if(data.status ==="success") {
