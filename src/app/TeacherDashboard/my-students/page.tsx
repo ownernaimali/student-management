@@ -4,90 +4,91 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Plus, Mail, Phone, MoreVertical, Download } from "lucide-react";
+import { MoreVertical } from "lucide-react";
+import {useEffect, useState} from "react";
 
-const students = [
-          {
-            id: '1',
-            name: 'John Doe',
-            rollNumber: '001',
-            className: '1',
-            email: 'john.doe@school.com',
-            phone: '+1 234 567 8900',
-            attendance: 95,
-            grade: 'A',
-            parentName: 'Robert Doe',
-            parentPhone: '+1 234 567 8901',
-            status: 'active'
-          },
-          {
-            id: '2',
-            name: 'Jane Smith',
-            rollNumber: '002',
-            className: '1',
-            email: 'jane.smith@school.com',
-            phone: '+1 234 567 8902',
-            attendance: 88,
-            grade: 'B+',
-            parentName: 'Mary Smith',
-            parentPhone: '+1 234 567 8903',
-            status: 'active'
-          },
-          {
-            id: '3',
-            name: 'Mike Johnson',
-            rollNumber: '003',
-            className: '2',
-            email: 'mike.johnson@school.com',
-            phone: '+1 234 567 8904',
-            attendance: 92,
-            grade: 'A-',
-            parentName: 'David Johnson',
-            parentPhone: '+1 234 567 8905',
-            status: 'active'
-          },
-          {
-            id: '4',
-            name: 'Sarah Wilson',
-            rollNumber: '004',
-            className: '1',
-            email: 'sarah.wilson@school.com',
-            phone: '+1 234 567 8906',
-            attendance: 78,
-            grade: 'C+',
-            parentName: 'Lisa Wilson',
-            parentPhone: '+1 234 567 8907',
-            status: 'active'
-          },
-          {
-            id: '5',
-            name: 'David Brown',
-            rollNumber: '005',
-            className: '3',
-            email: 'david.brown@school.com',
-            phone: '+1 234 567 8908',
-            attendance: 96,
-            grade: 'A',
-            parentName: 'James Brown',
-            parentPhone: '+1 234 567 8909',
-            status: 'active'
-          },
-          {
-            id: '6',
-            name: 'Emma Davis',
-            rollNumber: '006',
-            className: '1',
-            email: 'emma.davis@school.com',
-            phone: '+1 234 567 8910',
-            attendance: 85,
-            grade: 'B',
-            parentName: 'Patricia Davis',
-            parentPhone: '+1 234 567 8911',
-            status: 'inactive'
-          }
-        ];
 export default function MyStudents() {
 
+  const [loading, setLoading] = useState(true);
+  const [classInfo, setClassInfo] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [teacher, setTeacher] = useState({});
+  const [studentInfo, setStudentInfo] = useState({});
+
+useEffect(() => {
+    fetch("http://localhost:3001/api/teachers/token", {
+    headers: {authorization: `Beare ${localStorage.getItem("token")}`}
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.status=="success") {
+			setTeacher(data.data);			
+        }
+    })
+    .catch(e => console.log(e))
+}, []);
+
+useEffect(() => {
+    fetch("http://localhost:3001/api/classes")
+    .then(res => res.json())
+    .then(data => {
+		if(data.status==="success") {
+		if(teacher._id) {
+			const filter = data?.data?.filter(cls => cls.firstTeacherId === teacher._id)
+			setClassInfo(filter);
+		}
+		}
+    })
+
+},[teacher]);
+
+
+
+  // Fetch students from API
+  useEffect(() => {
+const fetchStudents = async () => {
+
+    fetch("http://localhost:3001/api/utils")
+    .then(res => res.json())
+    .then(data => {
+        if(data.status ==="success") {
+		if(classInfo[0]?.classLevel) {
+			const findData = data.data?.classwise?.find(s => s.classLevel === classInfo[0].classLevel)
+			setStudentInfo(findData);
+
+		}
+    }
+
+    })
+    .catch(e => console.log(e))
+  
+      try {
+      if(classInfo[0].classLevel) {
+        const response = await fetch(`https://student-management-server-xwpm.onrender.com/api/students/class/${classInfo[0].classLevel}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch students');
+        }
+        const data = await response.json();
+        setStudents(data.data);
+        console.log(data.data);
+        }
+      } catch (e) {
+         if (typeof e === "object" && e !== null && "status" in e) {
+      const err = e as { status: string; message: string };
+        Swal.fire("Error", err?.message || "Unknown Error. try again", "error") 
+         }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStudents();
+  }, [classInfo]);
+
+
+if(loading) {
+	return <p className="text-center mt-20">loading...</p>
+}
 
   return (
     <div className="p-6 space-y-6">
@@ -99,6 +100,7 @@ export default function MyStudents() {
             Manage and view all your students information
           </p>
         </div>
+        {/*
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm">
             <Download className="h-4 w-4 mr-2" />
@@ -109,8 +111,9 @@ export default function MyStudents() {
             Add Student
           </Button>
         </div>
-      </div>
-
+   
+		*/}
+	</div>
       {/* Stats Overview */}
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
@@ -139,22 +142,20 @@ export default function MyStudents() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-blue-600">
-              {students.length > 0 
-                ? Math.round(students.reduce((acc, student) => acc + student.attendance, 0) / students.length)
-                : 0}%
+              {studentInfo.attendanceRate} %
             </div>
             <p className="text-xs text-muted-foreground">Overall rate</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Classes</CardTitle>
+            <CardTitle className="text-sm font-medium flex justify-between w-full"><p>Present</p> <p>Absent</p></CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-purple-600">
-              5
+            <div className="text-2xl font-bold text-purple-600 flex gap-2 justify-between">
+              <p className="border rounded-full px-2 text-center">{ studentInfo.present}</p> <p className="border rounded-full px-2 text-center"> {studentInfo.absent}</p>
             </div>
-            <p className="text-xs text-muted-foreground">Different classes</p>
+            <p className="text-xs text-muted-foreground">This class</p>
           </CardContent>
         </Card>
       </div>
@@ -171,7 +172,7 @@ export default function MyStudents() {
           </div>
         ) : (
           students.map((student) => (
-            <Card key={student.id} className="overflow-hidden">
+            <Card key={student._id} className="overflow-hidden">
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -184,7 +185,7 @@ export default function MyStudents() {
                     <div>
                       <CardTitle className="text-lg">{student.name}</CardTitle>
                       <p className="text-sm text-muted-foreground">
-                        Roll No: {student.rollNumber}
+                        {/* roll number*/}
                       </p>
                     </div>
                   </div>
@@ -199,15 +200,11 @@ export default function MyStudents() {
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Class</span>
-                    <Badge variant="outline">Class {student.className}</Badge>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Email</span>
-                    <span>{student.email}</span>
+                    <Badge variant="outline">Class {student.classLevel}</Badge>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Phone</span>
-                    <span>{student.phone}</span>
+                    <span>{student.mobile}</span>
                   </div>
                 </div>
 
@@ -215,13 +212,13 @@ export default function MyStudents() {
                 <div className="grid grid-cols-2 gap-4 pt-4 border-t">
                   <div className="text-center">
                     <div className={`text-lg font-semibold `}>
-                      {student.attendance}%
+                      {1 || student.attendance}%
                     </div>
                     <div className="text-xs text-muted-foreground">Attendance</div>
                   </div>
                   <div className="text-center">
                     <div className={`text-lg font-semibold px-2 py-1 rounded`}>
-                      {student.grade}
+                      {"A" || student.grade}
                     </div>
                     <div className="text-xs text-muted-foreground">Grade</div>
                   </div>
@@ -233,24 +230,19 @@ export default function MyStudents() {
                   <div className="space-y-1 text-sm">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Name</span>
-                      <span>{student.parentName}</span>
+                      <span>{student.fatherName}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Phone</span>
-                      <span>{student.parentPhone}</span>
+                      <span>{student.parentMobile}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Actions */}
-                <div className="flex gap-2 pt-4">
-                  <Button variant="outline" size="sm" className="flex-1">
-                    <Mail className="h-4 w-4 mr-2" />
-                    Email
-                  </Button>
-                  <Button variant="outline" size="sm" className="flex-1">
-                    <Phone className="h-4 w-4 mr-2" />
-                    Call
+                <div className="flex justify-end pt-4">
+                  <Button variant="outline" size="sm" className="px-3">
+                    Full Info
                   </Button>
                 </div>
               </CardContent>

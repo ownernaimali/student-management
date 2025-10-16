@@ -24,6 +24,7 @@ export default function AddClassPage() {
     classLevel: "",
     subjects: [] as string[],
     firstTeacher: "",
+    firstTeacherId: "",
     room: "",
     notes: "",
   });
@@ -38,7 +39,6 @@ export default function AddClassPage() {
 
   type Teacher = { name: string; [key: string]: unknown };
   const [teachers, setTeachers] = useState<Teacher[]>([]);
-  const [loadingTeachers, setLoadingTeachers] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (key: keyof typeof classData, value: unknown) => {
@@ -71,7 +71,6 @@ export default function AddClassPage() {
   useEffect(() => {
     const fetchTeachers = async () => {
       try {
-        setLoadingTeachers(true);
         const res = await fetch("https://student-management-server-xwpm.onrender.com/api/teachers");
         const data = await res.json();
         if (res.ok) {
@@ -87,9 +86,7 @@ export default function AddClassPage() {
             : "Could not fetch teachers",
           "error"
         );
-      } finally {
-        setLoadingTeachers(false);
-      }
+	}
     };
 
     fetchTeachers();
@@ -134,6 +131,7 @@ export default function AddClassPage() {
           classLevel: "",
           subjects: [],
           firstTeacher: "",
+          firstTeacherId: "",
           room: "",
           notes: "",
         });
@@ -168,6 +166,8 @@ export default function AddClassPage() {
       addSubject();
     }
   };
+
+  
 
   return (
     <main className="p-6 max-w-3xl mx-auto">
@@ -245,33 +245,27 @@ export default function AddClassPage() {
               <Label htmlFor="firstTeacher">
                 First Teacher <span className="text-red-500">*</span>
               </Label>
-              <Select
-                value={classData.firstTeacher || " "}
-                onValueChange={(val) => handleChange("firstTeacher", val)}
-                required
-              >
-                <SelectTrigger 
-                  id="firstTeacher"
-                  className={formErrors.firstTeacher ? "border-red-500" : ""}
-                >
-                  <SelectValue
-                    placeholder={
-                      loadingTeachers ? "Loading teachers..." : "Select teacher"
-                    }
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  {teachers.map((teacher, index) => (
-                    <SelectItem key={index} value={teacher.name || " "}>
-                      {teacher.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {formErrors.firstTeacher && (
-                <p className="text-red-500 text-sm mt-1">First teacher is required</p>
-              )}
-            </div>
+
+<Select onValueChange= {(val) => {
+	const [name, id] = val.split("|");
+	handleChange("firstTeacher", name);
+	handleChange("firstTeacherId", id);	
+}} required>
+  <SelectTrigger>
+    <SelectValue placeholder="Select Teacher" />
+  </SelectTrigger>
+  <SelectContent>
+		{teachers.map((teacher, index) => (
+              <SelectItem  key={index} value={(`${teacher.name}|${teacher._id}`) || ""}>
+                   {teacher.name}
+               </SelectItem>
+          ))}
+  </SelectContent>
+</Select>
+    {formErrors.firstTeacher && (
+         <p className="text-red-500 text-sm mt-1">First teacher is required</p>
+        )}
+     </div>
 
             {/* Room */}
             <div>

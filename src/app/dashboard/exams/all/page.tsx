@@ -121,7 +121,7 @@ export default function ViewExamPage() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <Link href={`/dashboard/exams/update/${exams._id}/edit`}>
+                          <Link href={`/dashboard/exams/update/${examData._id}/${subject}/edit`}>
                           <DropdownMenuItem
                             className="cursor-pointer"
                           >

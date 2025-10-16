@@ -26,23 +26,73 @@ interface Student {
 
 export default function StudentAttendance() {
 
-  const classLevel = "3"; 
+  const [classInfo, setClassInfo] = useState([]);
   const nowDate = new Date().toISOString().split("T")[0];
   const [students, setStudents] = useState<Student[]>([]);
   const [attendance, setAttendance] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [teacher, setTeacher] = useState({});
+
+  const [present, setPresent] = useState(0);
+  const [absent,setAbsent] = useState(0);
+
+useEffect(() => {
+    fetch("http://localhost:3001/api/teachers/token", {
+    headers: {authorization: `Beare ${localStorage.getItem("token")}`}
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.status=="success") {
+			setTeacher(data.data);			
+        }
+    })
+    .catch(e => console.log(e))
+}, []);
+
+useEffect(() => {
+    fetch("http://localhost:3001/api/classes")
+    .then(res => res.json())
+    .then(data => {
+		if(data.status==="success") {
+		if(teacher._id) {
+			const filter = data?.data?.filter(cls => cls.firstTeacherId === teacher._id)
+			setClassInfo(filter);
+		}
+		}
+    })
+    
+},[teacher]);
+
+
 
   // Fetch students from API
   useEffect(() => {
     const fetchStudents = async () => {
+fetch("http://localhost:3001/api/utils")
+    .then(res => res.json())
+    .then(data => {
+        if(data.status ==="success") {
+        if(classInfo[0]?.classLevel) {
+            const findData = data.data?.classwise?.find(s => s.classLevel === classInfo[0]?.classLevel)
+			setPresent(findData.present);
+			setAbsent(findData.absent);
+
+        }
+    }
+
+    })
+    .catch(e => console.log(e))
+    
       try {
-        const response = await fetch(`https://student-management-server-xwpm.onrender.com/api/students/class/${classLevel}`);
+      if(classInfo[0].classLevel) {
+        const response = await fetch(`https://student-management-server-xwpm.onrender.com/api/students/class/${classInfo[0].classLevel}`);
         if (!response.ok) {
           throw new Error('Failed to fetch students');
         }
         const data = await response.json();
         setStudents(data.data);
+        }
       } catch (e) {
          if (typeof e === "object" && e !== null && "status" in e) {
       const err = e as { status: string; message: string };
@@ -54,7 +104,7 @@ export default function StudentAttendance() {
     };
 
     fetchStudents();
-  }, []);
+  }, [classInfo]);
 
 const handleAttendance = (id: string, status: string) => {
 
@@ -99,7 +149,7 @@ const statusText = status.charAt(0).toUpperCase() + status.slice(1);
         <div className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Student Attendance</h1>
           <p className="text-muted-foreground">
-            Class {classLevel} - Manage student attendance for {selectedDate}
+            Class {classInfo[0]?.classLevel} - Manage student attendance for {selectedDate}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -125,7 +175,7 @@ const statusText = status.charAt(0).toUpperCase() + status.slice(1);
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{students.length}</div>
-            <p className="text-xs text-muted-foreground">Class {classLevel}</p>
+            <p className="text-xs text-muted-foreground">Class {classInfo[0]?.classLevel}</p>
           </CardContent>
         </Card>
         <Card>
@@ -134,9 +184,9 @@ const statusText = status.charAt(0).toUpperCase() + status.slice(1);
             <UserCheck className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">{students.length}</div>
+            <div className="text-2xl font-bold text-green-600">{present}</div>
             <p className="text-xs text-muted-foreground">
-              100% of class
+              {students.length} of class
             </p>
           </CardContent>
         </Card>
@@ -146,9 +196,9 @@ const statusText = status.charAt(0).toUpperCase() + status.slice(1);
             <UserX className="h-4 w-4 text-red-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600">{students.length}</div>
+            <div className="text-2xl font-bold text-red-600">{absent}</div>
             <p className="text-xs text-muted-foreground">
-              100% of class
+				{students.length} of class
             </p>
           </CardContent>
         </Card>
@@ -158,7 +208,7 @@ const statusText = status.charAt(0).toUpperCase() + status.slice(1);
       {/* Students List */}
       <Card>
         <CardHeader>
-          <CardTitle>Class {classLevel} Students</CardTitle>
+          <CardTitle>Class {classInfo[0]?.classLevel} Students</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -181,7 +231,7 @@ const statusText = status.charAt(0).toUpperCase() + status.slice(1);
                     <div>
                       <h4 className="font-semibold">{student.name}</h4>
                       <p className="text-sm text-muted-foreground">
-                        Roll No: 01
+                        Roll No: {index+1}
                       </p>
                     </div>
                   </div>
@@ -195,7 +245,11 @@ const statusText = status.charAt(0).toUpperCase() + status.slice(1);
                         )
                     }
                       size="sm"
-                      onClick={() => handleAttendance(student._id, "present")}
+                      onClick={() => {
+                      handleAttendance(student._id, "present")
+						setPresent(prev => prev + 1)
+						setAbsent(prev => prev - 1);
+                      }}
                       className="bg-green-600 hover:bg-green-700 text-white"
                     > 
                       Present
@@ -205,7 +259,11 @@ const statusText = status.charAt(0).toUpperCase() + status.slice(1);
                           (record: { attendDate: string; status: string; }) =>
                             record.attendDate === nowDate && record.status === "absent"
                         ) }
-                    onClick={() => handleAttendance(student._id, "absent")}
+                    onClick={() => {
+                    handleAttendance(student._id, "absent")
+					setAbsent(prev => prev + 1);
+					setPresent(prev => prev - 1);
+                    }}
                       size="sm"
                       className="bg-red-600 hover:bg-red-700 text-white"
                     >

@@ -25,6 +25,7 @@ export default function HomePage() {
     { name: "Academics", href: "#academics" },
     { name: "Events", href: "#events" },
     { name: "Contact", href: "#contact" },
+    { name: "Login", href: "/login" },
   ]
 
   const stats = [

@@ -29,6 +29,7 @@ export default function UpdateClassPage() {
     classLevel: "",
     subjects: [] as string[],
     firstTeacher: "",
+    firstTeacherId: "",
     room: "",
     notes: "",
   });
@@ -89,12 +90,12 @@ export default function UpdateClassPage() {
             classLevel: classInfo.classLevel || "",
             subjects: classInfo.subjects || [],
             firstTeacher: classInfo.firstTeacher || "",
+            firstTeacherId: classInfo.firstTeacherId || "",
             room: classInfo.room || "",
             notes: classInfo.notes || "",
           });
         } else {
           Swal.fire("Error", data.message || "Failed to load class data", "error");
-          router.push("/classes");
         }
       } catch (e) {
         Swal.fire(
@@ -104,7 +105,7 @@ export default function UpdateClassPage() {
             : "Could not fetch class data",
           "error"
         );
-        router.push("/classes");
+        router.push("/dashboard/classes");
       } finally {
         setLoadingClass(false);
       }
@@ -140,6 +141,11 @@ export default function UpdateClassPage() {
 
     fetchTeachers();
   }, []);
+
+useEffect(() => {
+console.log("class data:", classData);
+}, [classData, teachers]);
+
 
   const validateForm = () => {
     const errors = {
@@ -181,7 +187,7 @@ export default function UpdateClassPage() {
           title: "Class Updated",
           text: `Class updated successfully!`,
         }).then(() => {
-          router.push("/classes");
+          router.push("/dashboard/classes");
         });
       } else {
         Swal.fire({
@@ -298,8 +304,12 @@ export default function UpdateClassPage() {
                 First Teacher <span className="text-red-500">*</span>
               </Label>
               <Select
-                value={classData.firstTeacher}
-                onValueChange={(val) => handleChange("firstTeacher", val)}
+                value={`${classData.firstTeacher}|${classData.firstTeacherId}`}
+                onValueChange={(val) => {
+                const [name, id] = val.split("|");
+                handleChange("firstTeacher", name);
+                handleChange("firstTeacherId", id);
+                }}
                 required
               >
                 <SelectTrigger 
@@ -314,7 +324,7 @@ export default function UpdateClassPage() {
                 </SelectTrigger>
                 <SelectContent>
                   {teachers.length !== 0 && teachers.map((teacher, index) => (
-                    <SelectItem key={index} value={teacher.name || " "}>
+                    <SelectItem key={index} value={`${teacher.name}|${teacher._id}`}>
                       {teacher.name}
                     </SelectItem>
                   ))}

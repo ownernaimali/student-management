@@ -16,7 +16,7 @@ export default function TeacherDashboardLayout({ children }: DashboardLayoutProp
     const role = localStorage.getItem("role");
 
     if (!token || role !== "teacher") {
-        router.push("/"); 
+        router.push("/login"); 
     } else {
       setIsChecking(false);
     }

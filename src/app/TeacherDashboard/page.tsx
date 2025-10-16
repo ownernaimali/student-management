@@ -1,34 +1,31 @@
-export default function Dashboard() {
+"use client"
+import {useState, useEffect} from "react";
+
+export default function TeacherDashboard() {
+const [teacher, setTeacher] = useState({});
+
+useEffect(() => {
+	fetch("http://localhost:3001/api/teachers/token", {
+	headers: {authorization: `Beare ${localStorage.getItem("token")}`}
+	})
+	.then(res => res.json())
+	.then(data => {
+		if(data.status=="success") {
+			setTeacher(data.data)
+			console.log(data.data)
+		}
+		console.log(data)
+	})
+	.catch(e => console.log(e))
+},[]);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto py-6 px-4">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
               <h1 className="text-3xl font-bold text-gray-900">Student Analysis Dashboard</h1>
-              <p className="text-gray-600 mt-2">Welcome back, Dr. Smith! Here&#39;s your class overview.</p>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-                <input
-                  type="text"
-                  placeholder="Search students..."
-                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white/80 backdrop-blur-sm"
-                />
-              </div>
-              <button className="bg-white/80 backdrop-blur-sm border border-gray-300 rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-white transition-colors">
-                Filter
-              </button>
-            </div>
-          </div>
-        </div>
-
+              <p className="text-gray-600 mt-2">Welcome back, {teacher.name} Here&#39;s your class overview.</p>
+		</div>
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 backdrop-blur-sm">
@@ -248,7 +245,6 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-    </div>
   );
 }
 /*
