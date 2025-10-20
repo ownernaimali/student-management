@@ -28,7 +28,7 @@ export default function EditExamPage() {
         return;
     }
 
-    fetch(`https://student-management-server-xwpm.onrender.com/api/exams/${id}/${subject}`)
+    fetch(`http://localhost:3001/api/exams/id/${id}/${subject}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.status === "success") {
@@ -49,7 +49,7 @@ export default function EditExamPage() {
   // Submit handler
   const handleSubmit = () => {
 
-fetch(`https://student-management-server-xwpm.onrender.com/api/exams/${id}/${subject}`, {
+fetch(`http://localhost:3001/api/exams/id/${id}/${subject}`, {
 	method: "PUT",
 	headers: {"Content-Type": "application/json"},
 	body: JSON.stringify(examDetail)

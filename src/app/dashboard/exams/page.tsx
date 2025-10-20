@@ -14,7 +14,7 @@ export default function ExamDashboardPage() {
   const [total, setTotal] = useState(0);
  useEffect(() => {
   try {
-    fetch("https://student-management-server-xwpm.onrender.com/api/totals/exams")
+    fetch("http://localhost:3001/api/totals/exams")
     .then(res => res.json())
     .then(data => {
       if(data.status==="success") {

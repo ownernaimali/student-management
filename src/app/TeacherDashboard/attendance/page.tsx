@@ -38,7 +38,7 @@ export default function StudentAttendance() {
   const [absent,setAbsent] = useState(0);
 
 useEffect(() => {
-    fetch("https://student-management-server-xwpm.onrender.com/api/teachers/token", {
+    fetch("http://localhost:3001/api/teachers/token", {
     headers: {authorization: `Beare ${localStorage.getItem("token")}`}
     })
     .then(res => res.json())
@@ -51,7 +51,7 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
-    fetch("https://student-management-server-xwpm.onrender.com/api/classes")
+    fetch("http://localhost:3001/api/classes")
     .then(res => res.json())
     .then(data => {
 		if(data.status==="success") {
@@ -69,7 +69,7 @@ useEffect(() => {
   // Fetch students from API
   useEffect(() => {
     const fetchStudents = async () => {
-fetch("https://student-management-server-xwpm.onrender.com/api/utils")
+fetch("http://localhost:3001/api/utils")
     .then(res => res.json())
     .then(data => {
         if(data.status ==="success") {
@@ -86,7 +86,7 @@ fetch("https://student-management-server-xwpm.onrender.com/api/utils")
     
       try {
       if(classInfo[0].classLevel) {
-        const response = await fetch(`https://student-management-server-xwpm.onrender.com/api/students/class/${classInfo[0].classLevel}`);
+        const response = await fetch(`http://localhost:3001/api/students/class/${classInfo[0].classLevel}`);
         if (!response.ok) {
           throw new Error('Failed to fetch students');
         }
@@ -109,7 +109,7 @@ fetch("https://student-management-server-xwpm.onrender.com/api/utils")
 const handleAttendance = (id: string, status: string) => {
 
 try {
-fetch(`https://student-management-server-xwpm.onrender.com/api/students/attendance/${id}`, {
+fetch(`http://localhost:3001/api/students/attendance/${id}`, {
   method: "PUT",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({ status }),

@@ -16,6 +16,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import Swal from "sweetalert2"
+import {  MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link"
 type AttendanceRecord = {
@@ -48,7 +56,7 @@ export default function ViewStudentsPage() {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const res = await fetch("https://student-management-server-xwpm.onrender.com/api/students");
+        const res = await fetch("http://localhost:3001/api/students");
         if (!res.ok) throw new Error("Failed to fetch students");
         const data = await res.json();
         if(data.status === 'success') {
@@ -70,6 +78,19 @@ const studentsByClass = students.reduce((acc, s) => {
   acc[s.classLevel].push(s);
   return acc;
 }, {});
+
+const handleDelete = (id) => {
+	fetch(`http://localhost:3001/api/students/id/${id}`, {
+		method: "DELETE",
+	})
+	.then(res => res.json())
+	.then(data => {
+	console.log(data);
+		if(data.status==="success") {
+			Swal.fire("Successfull", "Delete Student", "success")
+		}
+	})
+}
   
   return (
     <main className="max-w-7xl mx-auto">
@@ -116,13 +137,6 @@ const studentsByClass = students.reduce((acc, s) => {
                           <TableCell>{s.classLevel}</TableCell>
                           <TableCell>{s.gender}</TableCell>
                           <TableCell>{s.mobile}</TableCell>
-                          <TableCell>
-                            <Link href={`/dashboard/students/update/${s._id}/edit`}><Button size="sm">Update</Button></Link>
-                            <Link href={`/dashboard/students/${s._id}`}><Button  size="sm">Disable</Button></Link>
-                            <Link href={`/dashboard/students/${s._id}`}><Button  size="sm">Info</Button></Link>
-                            </TableCell>
-
-                          {/*
                           <TableCell className="text-right">
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
@@ -136,15 +150,15 @@ const studentsByClass = students.reduce((acc, s) => {
                                     <Pencil className="w-4 h-4 mr-2" /> Edit
                                   </DropdownMenuItem>
                                 </Link>
-                                <Link href={`/dashboard/students/delete/${s._id}/`}>
+								<p onClick={() => handleDelete(s._id)}>
                                   <DropdownMenuItem className="cursor-pointer text-red-600 focus:text-red-600">
+                                  
                                     <Trash2 className="w-4 h-4 mr-2" /> Delete
                                   </DropdownMenuItem>
-                                </Link>
+                                  </p>
                               </DropdownMenuContent>
                             </DropdownMenu>
                           </TableCell>
-                          */}
                         </TableRow>
                       ))
                     ) : (

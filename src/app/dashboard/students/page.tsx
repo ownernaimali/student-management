@@ -16,7 +16,7 @@ const [utils, setUtils] = useState({});
   useEffect(() => {
     const totalStudentsLength = async () => {
       try {
-        const res = await fetch("https://student-management-server-xwpm.onrender.com/api/utils");
+        const res = await fetch("http://localhost:3001/api/utils");
         if (!res.ok) {
           throw new Error("Failed to fetch total students");
         }

@@ -14,7 +14,7 @@ export default function TeacherDashboard() {
   useEffect(() => {
     const fetchTotals = async () => {
       try {
-        const res = await fetch("https://student-management-server-xwpm.onrender.com/api/totals/teachers");
+        const res = await fetch("http://localhost:3001/api/totals/teachers");
         const data = await res.json();
         if (res.ok && typeof data.total === "number") {
           setTotal(data.total);

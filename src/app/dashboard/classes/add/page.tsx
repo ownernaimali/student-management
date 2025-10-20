@@ -71,7 +71,7 @@ export default function AddClassPage() {
   useEffect(() => {
     const fetchTeachers = async () => {
       try {
-        const res = await fetch("https://student-management-server-xwpm.onrender.com/api/teachers");
+        const res = await fetch("http://localhost:3001/api/teachers");
         const data = await res.json();
         if (res.ok) {
           setTeachers(data.data); 
@@ -113,7 +113,7 @@ export default function AddClassPage() {
 
     try {
       setIsSubmitting(true);
-      const res = await fetch("https://student-management-server-xwpm.onrender.com/api/classes", {
+      const res = await fetch("http://localhost:3001/api/classes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(classData),

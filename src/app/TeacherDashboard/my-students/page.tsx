@@ -16,7 +16,7 @@ export default function MyStudents() {
   const [studentInfo, setStudentInfo] = useState({});
 
 useEffect(() => {
-    fetch("https://student-management-server-xwpm.onrender.com/api/teachers/token", {
+    fetch("http://localhost:3001/api/teachers/token", {
     headers: {authorization: `Beare ${localStorage.getItem("token")}`}
     })
     .then(res => res.json())
@@ -29,7 +29,7 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
-    fetch("https://student-management-server-xwpm.onrender.com/api/classes")
+    fetch("http://localhost:3001/api/classes")
     .then(res => res.json())
     .then(data => {
 		if(data.status==="success") {
@@ -48,7 +48,7 @@ useEffect(() => {
   useEffect(() => {
 const fetchStudents = async () => {
 
-    fetch("https://student-management-server-xwpm.onrender.com/api/utils")
+    fetch("http://localhost:3001/api/utils")
     .then(res => res.json())
     .then(data => {
         if(data.status ==="success") {
@@ -64,7 +64,7 @@ const fetchStudents = async () => {
   
       try {
       if(classInfo[0].classLevel) {
-        const response = await fetch(`https://student-management-server-xwpm.onrender.com/api/students/class/${classInfo[0].classLevel}`);
+        const response = await fetch(`http://localhost:3001/api/students/class/${classInfo[0].classLevel}`);
         if (!response.ok) {
           throw new Error('Failed to fetch students');
         }

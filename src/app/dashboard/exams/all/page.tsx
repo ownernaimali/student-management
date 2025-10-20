@@ -34,7 +34,7 @@ export default function ViewExamPage() {
   const [exams, setExams] = useState([]);
 
   useEffect(() => {
-    fetch("https://student-management-server-xwpm.onrender.com/api/exams")
+    fetch("http://localhost:3001/api/exams")
       .then((res) => res.json())
       .then((data) => {
         if (data.status === "success") {

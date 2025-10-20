@@ -5,7 +5,7 @@ export default function TeacherDashboard() {
 const [teacher, setTeacher] = useState({});
 
 useEffect(() => {
-	fetch("https://student-management-server-xwpm.onrender.com/api/teachers/token", {
+	fetch("http://localhost:3001/api/teachers/token", {
 	headers: {authorization: `Beare ${localStorage.getItem("token")}`}
 	})
 	.then(res => res.json())
