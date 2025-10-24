@@ -55,7 +55,7 @@ export default function TeacherDashboard() {
             <CardTitle>Total Present</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-3xl font-bold text-green-600">12</p>
+            <p className="text-3xl font-bold text-green-600">0</p>
           </CardContent>
         </Card>
 

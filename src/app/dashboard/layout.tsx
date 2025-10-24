@@ -33,7 +33,7 @@ export default function AdminDashboardLayout({ children }: DashboardLayoutProps)
   return (
   <main>
 	<Nav />
-	<section className="mt-20">{children}</section>
+	<section className="mt-20 max-w-[1440px] mx-auto">{children}</section>
   </main>
   );
 }

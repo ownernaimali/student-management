@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import Swal from "sweetalert2";
 type ClassType = {
   _id: string;
   classLevel: string;
@@ -39,6 +40,20 @@ export default function ViewClassesPage() {
 
     fetchClasses();
   }, []);
+
+
+const handleDelete = (id: string) => {
+  fetch(`http://localhost:3001/api/classes/id/${id}`, {
+    method: "DELETE",
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.status==="success") {
+      setClasses(prev => prev.filter(c => c._id !== id));
+      Swal.fire("Successfull", "Delete Class", "success")      
+    }
+  })
+}
 
   return (
     <main className="p-6 max-w-5xl mx-auto">
@@ -103,7 +118,7 @@ export default function ViewClassesPage() {
                   Edit
                 </Button>
                 </Link>
-                <Button variant="destructive" size="sm">
+                <Button onClick={() => handleDelete(cls._id)} variant="destructive" size="sm">
                   Delete
                 </Button>
               </div>

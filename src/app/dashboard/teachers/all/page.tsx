@@ -26,7 +26,7 @@ import {
 import { Button } from "@/components/ui/button";
 import {  MoreHorizontal, Pencil, Trash2, Users } from "lucide-react";
 import Link from "next/link";
-
+import Swal from "sweetalert2";
 
 type Teacher = {
   _id: string;
@@ -57,6 +57,20 @@ export default function ViewTeachersPage() {
       console.log("/teachers/all/page.tsx: ", e);
     }
   }, []);
+
+const handleDelete = (id: string) => {
+  fetch(`http://localhost:3001/api/teachers/id/${id}`, {
+    method: "DELETE",
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.status==="success") {
+      Swal.fire("Successfull", "Delete Teacher", "success")
+      setTeachers(prev => prev.filter(t => t._id !== id));
+      
+    }
+  })
+}
 
 
   return (
@@ -126,6 +140,7 @@ export default function ViewTeachersPage() {
                           </Link>
 
                           <DropdownMenuItem
+                          onClick={() => handleDelete(t._id)}
                             className="cursor-pointer text-red-600 focus:text-red-600"
                           >
                             <Trash2 className="w-4 h-4 mr-2" /> Delete

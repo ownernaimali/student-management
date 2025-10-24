@@ -27,7 +27,7 @@ import {
 import { Button } from "@/components/ui/button";
 import {  MoreHorizontal, Pencil, Trash2, Users } from "lucide-react";
 import Link from "next/link";
-
+import Swal from "sweetalert2";
 
 
 export default function ViewExamPage() {
@@ -56,6 +56,47 @@ export default function ViewExamPage() {
   };
 
 
+  const handleDeleteExam = (id: string) => {
+  fetch(`http://localhost:3001/api/exams/id/${id}`, {
+    method: "DELETE",
+  })
+  .then(res => res.json())
+  .then(data => {
+      if(data.status === "success") {
+        setExams(prev => prev.filter(e => e._id !== id))
+        Swal.fire("success", "Exam deleted successfully", "success");
+      }
+      else {
+        console.error(data.message)
+      }
+  })
+
+  }
+
+  const handleDelete = (id: string, subject: string) => {
+
+  fetch(`http://localhost:3001/api/exams/id/${id}/${subject}`, {
+    method: "DELETE",
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.status==="success") {
+      Swal.fire("success", "Subject deleted successfully", "success");
+      // Update the local state to remove the deleted exam
+      setExams(prevExams =>  prevExams.map(exam => {
+          if(exam._id === id) {
+            const {[subject]: _, ...remainingExams} = exam.exams;
+            return {...exam, exams: remainingExams};
+          }
+          return exam;
+        })
+      );
+    }
+  })
+  
+}
+
+
 
   return (
     <main className="p-4 sm:p-6 max-w-7xl mx-auto">
@@ -81,7 +122,7 @@ export default function ViewExamPage() {
 				  <CardHeader>
 					<CardTitle>Class Level: {examData?.classLevel}</CardTitle>
 					<CardDescription>Exam data views</CardDescription>
-					<CardAction><Button variant="outline">Edit</Button></CardAction>
+					<CardAction><Button variant="outline" onClick={() => handleDeleteExam(examData._id)}>Edit</Button></CardAction>
 				  </CardHeader>
 				  <CardContent>
 				   <div className="overflow-x-auto">
@@ -130,6 +171,7 @@ export default function ViewExamPage() {
                           </Link>
 
                           <DropdownMenuItem
+                            onClick={() => handleDelete(examData._id, subject)}
                             className="cursor-pointer text-red-600 focus:text-red-600"
                           >
                             <Trash2 className="w-4 h-4 mr-2" /> Delete

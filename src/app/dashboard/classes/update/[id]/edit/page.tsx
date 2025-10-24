@@ -369,10 +369,10 @@ console.log("class data:", classData);
               <Button 
                 type="button" 
                 variant="outline" 
-                onClick={() => router.push("/classes")}
+                onClick={() => router.push("/dashboard/classes/all")}
                 disabled={isSubmitting}
               >
-                Cancel
+                Back
               </Button>
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? "Updating Class..." : "Update Class"}

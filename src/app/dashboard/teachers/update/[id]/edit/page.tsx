@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 interface Teacher {
   name?: string;
   subject?: string;
@@ -187,6 +188,9 @@ export default function UpdateTeacherPage() {
           </div>
 
           <div className="pt-4 space-y-2">
+            <Link href="/dashboard/teachers">
+            <Button variant="outline" className="mr-2">Back</Button>
+            </Link>
             <Button onClick={handleSubmit} disabled={loading}>
               {loading ? "Updating..." : "Update Teacher"}
             </Button>

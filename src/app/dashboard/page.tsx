@@ -97,7 +97,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="py-6 px-2 mt-20 space-y-6">
+    <div className="py-6 px-2 mt-20 space-y-6 max-w-[1440px] mx-auto">
       {/* Page Header */}
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">Admin Dashboard</h1>

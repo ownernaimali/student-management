@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Swal from "sweetalert2";
+import Link from "next/link";
 
 type AttendanceRecord = {
 date: string;
@@ -346,6 +347,11 @@ export default function UpdateStudentPage() {
 
           {/* Submit Button */}
           <div className="pt-4">
+            <Link href="/dashboard/students/all">
+            <Button variant="outline" className="mr-2">
+              Back
+            </Button>
+            </Link>
             <Button onClick={handleSubmit} disabled={saving} className="w-full md:w-auto">
               {saving ? "Updating..." : "Update Student"}
             </Button>

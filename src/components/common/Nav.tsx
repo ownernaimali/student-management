@@ -24,7 +24,8 @@ export default function Nav() {
   const pathname = usePathname();
   const isTeacherDashboard = pathname?.startsWith("/TeacherDashboard");
 
-  const baseUser = { name: "Naim", email: "naim@gmail.com" };
+
+  const baseUser = { name: "Profile", email: "naim@gmail.com" };
 
   const adminNav = {
     user: baseUser,
@@ -76,8 +77,16 @@ export default function Nav() {
     setProfileOpen(false);
   };
 
+  // handle log out 
+  const handleLogOut = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    window.location.href = "/";
+  }
+
+
   return (
-    <nav className="bg-white shadow-md fixed top-0 left-0 w-full z-50">
+    <nav className="2xl:px-20 bg-white shadow-md fixed top-0 left-0 w-full z-50">
       <div className=" mx-auto px-3 py-4 flex items-center justify-between">
         {/* Logo */}
         <Link
@@ -99,7 +108,7 @@ export default function Nav() {
                   href={item.url}
                   onClick={handleLinkClick}
                   className={`flex items-center space-x-1 text-gray-700 hover:text-indigo-600 transition ${
-                    pathname === item.url ? "text-indigo-600 font-semibold" : ""
+                    pathname === item.url ||  (pathname.startsWith(item.url + "/") && item.url !== "/dashboard") ? "text-indigo-600 font-semibold" : ""
                   }`}
                 >
                   <Icon size={18} />
@@ -140,11 +149,11 @@ export default function Nav() {
                   );
                 })}
                 <button
-                  onClick={handleLinkClick}
+                  onClick={handleLogOut}
                   className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                 >
                   <LogOut size={16} className="mr-3" />
-                  Sign Out
+                  Sign Outss
                 </button>
               </div>
             )}

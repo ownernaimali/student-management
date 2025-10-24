@@ -79,15 +79,16 @@ const studentsByClass = students.reduce((acc, s) => {
   return acc;
 }, {});
 
-const handleDelete = (id) => {
+const handleDelete = (id: string) => {
 	fetch(`http://localhost:3001/api/students/id/${id}`, {
 		method: "DELETE",
 	})
 	.then(res => res.json())
 	.then(data => {
-	console.log(data);
 		if(data.status==="success") {
-			Swal.fire("Successfull", "Delete Student", "success")
+      setStudents(prev => prev.filter(s => s._id !== id));
+      Swal.fire("Successfull", "Delete Student", "success")
+			
 		}
 	})
 }
@@ -150,12 +151,9 @@ const handleDelete = (id) => {
                                     <Pencil className="w-4 h-4 mr-2" /> Edit
                                   </DropdownMenuItem>
                                 </Link>
-								<p onClick={() => handleDelete(s._id)}>
-                                  <DropdownMenuItem className="cursor-pointer text-red-600 focus:text-red-600">
-                                  
+                                  <DropdownMenuItem onClick={() => handleDelete(s._id)} className="cursor-pointer text-red-600 focus:text-red-600">
                                     <Trash2 className="w-4 h-4 mr-2" /> Delete
                                   </DropdownMenuItem>
-                                  </p>
                               </DropdownMenuContent>
                             </DropdownMenu>
                           </TableCell>
