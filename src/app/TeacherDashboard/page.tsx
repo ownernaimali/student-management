@@ -3,21 +3,65 @@ import {useState, useEffect} from "react";
 
 export default function TeacherDashboard() {
 const [teacher, setTeacher] = useState({});
+const [student, setStudents] = useState([]);
+const [utils, setUtils] = useState({}); 
+
+
 
 useEffect(() => {
 	fetch("http://localhost:3001/api/teachers/token", {
 	headers: {authorization: `Beare ${localStorage.getItem("token")}`}
 	})
 	.then(res => res.json())
-	.then(data => {
-		if(data.status=="success") {
-			setTeacher(data.data)
-			console.log(data.data)
+	.then(teacherInfo => {
+		if(teacherInfo.status=="success") {
+		setTeacher(teacherInfo.data)
+      
+  fetch("http://localhost:3001/api/classes")
+    .then(res => res.json())
+    .then(classInfo => {
+    if(classInfo.status==="success") {
+        const filter = classInfo?.data?.filter(cls => cls.firstTeacherId === teacherInfo.data._id)
+    
+        fetch(`http://localhost:3001/api/students/class/${filter[0]?.classLevel}`)
+    .then(res => res.json())
+    .then(data => {
+      if(data.status==="success") {
+        setStudents(data.data);
+
+        fetch("http://localhost:3001/api/utils")
+    .then(res => res.json())
+    .then(utilsData => {
+        if(utilsData.status ==="success") {
+          console.log("utilsData",utilsData);
+            const findData = utilsData.data?.classwise?.find(s => s.classLevel === filter[0]?.classLevel)
+          setUtils(findData);
+      }
+
+    })}
+
+
+
+    })
+    .catch(e => console.log(e))
+
+    }
+
+    })
+
 		}
-		console.log(data)
 	})
 	.catch(e => console.log(e))
+
+/*
+
+    if(classLevel) {
+
+  }
+*/
+
 },[]);
+
 
   return (
       <div className="max-w-7xl mx-auto py-6 px-4">
@@ -37,12 +81,12 @@ useEffect(() => {
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Total Students</p>
-                <p className="text-2xl font-bold text-gray-900">42</p>
+                <p className="text-2xl font-bold text-gray-900">{utils.students}</p>
               </div>
             </div>
           </div>
-
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 backdrop-blur-sm">
+{/* hidden */}
+          <div className=" hidden bg-white rounded-2xl shadow-sm border border-gray-200 p-6 backdrop-blur-sm">
             <div className="flex items-center">
               <div className="p-3 rounded-xl bg-green-100 text-green-600">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -65,7 +109,7 @@ useEffect(() => {
               </div>
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Attendance Rate</p>
-                <p className="text-2xl font-bold text-gray-900">92.3%</p>
+                <p className="text-2xl font-bold text-gray-900">{utils.attendanceRate }%</p>
               </div>
             </div>
           </div>
@@ -78,15 +122,29 @@ useEffect(() => {
                 </svg>
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Assignments</p>
-                <p className="text-2xl font-bold text-gray-900">24/28</p>
+                <p className="text-sm font-medium text-gray-600">Present</p>
+                <p className="text-2xl font-bold text-gray-900">{utils.present}</p>
+              </div>
+            </div>
+          </div>
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 backdrop-blur-sm">
+            <div className="flex items-center">
+              <div className="p-3 rounded-xl bg-purple-100 text-purple-600">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Present</p>
+                <p className="text-2xl font-bold text-gray-900">{utils.absent}</p>
               </div>
             </div>
           </div>
         </div>
 
+{/* hidden */}
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div className="hidden grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           {/* Left Column - Charts */}
           <div className="lg:col-span-2 space-y-6">
             {/* Performance Chart */}

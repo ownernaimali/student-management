@@ -49,8 +49,7 @@ export default function Nav() {
       { title: "Dashboard", url: "/TeacherDashboard", icon: LayoutDashboard },
       { title: "Attendance", url: "/TeacherDashboard/attendance", icon: Activity },
       { title: "Student", url: "/TeacherDashboard/my-students", icon: Users },
-      { title: "Class", url: "/TeacherDashboard/classes", icon: BookOpen },
-      { title: "My Activity", url: "/TeacherDashboard/activity", icon: Activity },
+      { title: "Exam", url: "/TeacherDashboard/exam", icon: BookOpen },
     ],
     navSecondary: [
       { title: "Settings", url: "#", icon: Settings },
@@ -105,7 +104,7 @@ export default function Nav() {
                   className={`flex items-center space-x-1 text-gray-700 hover:text-indigo-600 transition ${
                     pathname === item.url ||
                     (pathname.startsWith(item.url + "/") &&
-                      item.url !== "/dashboard")
+                      item.url !== "/dashboard" && item.url !== "/TeacherDashboard")
                       ? "text-indigo-600 font-semibold"
                       : ""
                   }`}
@@ -146,7 +145,7 @@ export default function Nav() {
                     className={`flex items-center px-3 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition ${
                     pathname === item.url ||
                     (pathname.startsWith(item.url + "/") &&
-                      item.url !== "/dashboard")
+                      item.url !== "/dashboard" && item.url !== "/TeacherDashboard")
                       ? "text-indigo-600 font-semibold"
                       : ""
                   }`}
@@ -194,7 +193,7 @@ export default function Nav() {
                   className={`flex items-center px-3 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition ${
                     pathname === item.url ||
                     (pathname.startsWith(item.url + "/") &&
-                      item.url !== "/dashboard")
+                      item.url !== "/dashboard" && item.url !== "/TeacherDashboard")
                       ? "text-indigo-600 font-semibold"
                       : ""
                   }`}
@@ -217,7 +216,7 @@ export default function Nav() {
                   className={`flex items-center px-3 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition ${
                     pathname === item.url ||
                     (pathname.startsWith(item.url + "/") &&
-                      item.url !== "/dashboard")
+                      item.url !== "/dashboard" && item.url !== "/TeacherDashboard")
                       ? "text-indigo-600 font-semibold"
                       : ""
                   }`}

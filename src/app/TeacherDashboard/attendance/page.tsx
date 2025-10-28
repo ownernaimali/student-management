@@ -34,9 +34,6 @@ export default function StudentAttendance() {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [teacher, setTeacher] = useState({});
 
-  const [present, setPresent] = useState(0);
-  const [absent,setAbsent] = useState(0);
-
 useEffect(() => {
     fetch("http://localhost:3001/api/teachers/token", {
     headers: {authorization: `Beare ${localStorage.getItem("token")}`}
@@ -69,21 +66,7 @@ useEffect(() => {
   // Fetch students from API
   useEffect(() => {
     const fetchStudents = async () => {
-fetch("http://localhost:3001/api/utils")
-    .then(res => res.json())
-    .then(data => {
-        if(data.status ==="success") {
-        if(classInfo[0]?.classLevel) {
-            const findData = data.data?.classwise?.find(s => s.classLevel === classInfo[0]?.classLevel)
-			setPresent(findData.present);
-			setAbsent(findData.absent);
 
-        }
-    }
-
-    })
-    .catch(e => console.log(e))
-    
       try {
       if(classInfo[0].classLevel) {
         const response = await fetch(`http://localhost:3001/api/students/class/${classInfo[0].classLevel}`);
@@ -166,49 +149,11 @@ const statusText = status.charAt(0).toUpperCase() + status.slice(1);
         </div>
       </div>
 
-      {/* Attendance Stats */}
-      <div className="grid gap-3 grid-cols-3">
-        <Card>
-          <CardHeader className="h-10 flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Students</CardTitle>
-            <Users className="h-4 w-4 text-blue-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{students.length}</div>
-            <p className="text-xs text-muted-foreground">Class {classInfo[0]?.classLevel}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="h-10 flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Present</CardTitle>
-            <UserCheck className="h-4 w-4 text-green-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">{present}</div>
-            <p className="text-xs text-muted-foreground">
-              {students.length} of class
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="h-10 flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Absent</CardTitle>
-            <UserX className="h-4 w-4 text-red-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">{absent}</div>
-            <p className="text-xs text-muted-foreground">
-				{students.length} of class
-            </p>
-          </CardContent>
-        </Card>
-      </div>
 
- 
       {/* Students List */}
       <Card>
         <CardHeader>
-          <CardTitle>Class {classInfo[0]?.classLevel} Students</CardTitle>
+          <CardTitle>Class {classInfo[0]?.classLevel} & Total Students {students.length}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -247,8 +192,7 @@ const statusText = status.charAt(0).toUpperCase() + status.slice(1);
                       size="sm"
                       onClick={() => {
                       handleAttendance(student._id, "present")
-						setPresent(prev => prev + 1)
-						setAbsent(prev => prev - 1);
+
                       }}
                       className="bg-green-600 hover:bg-green-700 text-white"
                     > 
@@ -261,8 +205,6 @@ const statusText = status.charAt(0).toUpperCase() + status.slice(1);
                         ) }
                     onClick={() => {
                     handleAttendance(student._id, "absent")
-					setAbsent(prev => prev + 1);
-					setPresent(prev => prev - 1);
                     }}
                       size="sm"
                       className="bg-red-600 hover:bg-red-700 text-white"
