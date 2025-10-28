@@ -122,7 +122,7 @@ export default function ViewExamPage() {
 				  <CardHeader>
 					<CardTitle>Class Level: {examData?.classLevel}</CardTitle>
 					<CardDescription>Exam data views</CardDescription>
-					<CardAction><Button variant="outline" onClick={() => handleDeleteExam(examData._id)}>Edit</Button></CardAction>
+					<CardAction><Button variant="outline" onClick={() => handleDeleteExam(examData._id)}>Delete</Button></CardAction>
 				  </CardHeader>
 				  <CardContent>
 				   <div className="overflow-x-auto">

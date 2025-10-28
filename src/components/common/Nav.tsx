@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Menu,
   X,
@@ -18,12 +18,12 @@ import {
 } from "lucide-react";
 
 export default function Nav() {
+   const router = useRouter(); 
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef(null);
   const pathname = usePathname();
   const isTeacherDashboard = pathname?.startsWith("/TeacherDashboard");
-
 
   const baseUser = { name: "Profile", email: "naim@gmail.com" };
 
@@ -61,7 +61,6 @@ export default function Nav() {
 
   const currentNav = isTeacherDashboard ? teacherNav : adminNav;
 
-  // Close dropdown if clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (profileRef.current && !profileRef.current.contains(e.target)) {
@@ -72,22 +71,19 @@ export default function Nav() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleLinkClick = () => {
-    setMenuOpen(false);
-    setProfileOpen(false);
-  };
 
-  // handle log out 
+  // handle log out
   const handleLogOut = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
-    window.location.href = "/";
-  }
+    router.push("/");
+    return;
+  };
 
 
   return (
     <nav className="2xl:px-20 bg-white shadow-md fixed top-0 left-0 w-full z-50">
-      <div className=" mx-auto px-3 py-4 flex items-center justify-between">
+      <div className="mx-auto px-3 py-4 flex items-center justify-between">
         {/* Logo */}
         <Link
           href={isTeacherDashboard ? "/TeacherDashboard" : "/dashboard"}
@@ -96,7 +92,7 @@ export default function Nav() {
           Sunnyvale School
         </Link>
 
-        {/* Desktop Menu */}
+        {/* desktop menu */}
         <div className="hidden md:flex items-center space-x-4">
           {/* Main Navigation */}
           <div className="flex space-x-6">
@@ -106,9 +102,12 @@ export default function Nav() {
                 <Link
                   key={item.title}
                   href={item.url}
-                  onClick={handleLinkClick}
                   className={`flex items-center space-x-1 text-gray-700 hover:text-indigo-600 transition ${
-                    pathname === item.url ||  (pathname.startsWith(item.url + "/") && item.url !== "/dashboard") ? "text-indigo-600 font-semibold" : ""
+                    pathname === item.url ||
+                    (pathname.startsWith(item.url + "/") &&
+                      item.url !== "/dashboard")
+                      ? "text-indigo-600 font-semibold"
+                      : ""
                   }`}
                 >
                   <Icon size={18} />
@@ -119,10 +118,10 @@ export default function Nav() {
           </div>
 
           {/* Profile Dropdown */}
-          <div className="relative" ref={profileRef}>
+          <div className="relative" ref={profileRef}> 
             <button
               onClick={() => setProfileOpen(!profileOpen)}
-              className="flex items-center space-x-2 text-gray-700 hover:text-indigo-600 focus:outline-none"
+                className="flex items-center space-x-2 text-gray-700 hover:text-indigo-600 focus:outline-none"
             >
               <User size={20} />
               <span className="font-medium">{currentNav.user.name}</span>
@@ -131,8 +130,12 @@ export default function Nav() {
             {profileOpen && (
               <div className="absolute right-0 mt-2 w-52 bg-white border rounded-md shadow-lg py-1 z-50">
                 <div className="px-4 py-3 border-b">
-                  <p className="text-sm font-semibold text-gray-900">{currentNav.user.name}</p>
-                  <p className="text-sm text-gray-500 truncate">{currentNav.user.email}</p>
+                  <p className="text-sm font-semibold text-gray-900">
+                    {currentNav.user.name}
+                  </p>
+                  <p className="text-sm text-gray-500 truncate">
+                    {currentNav.user.email}
+                  </p>
                 </div>
                 {currentNav.navSecondary.map((item) => {
                   const Icon = item.icon;
@@ -140,8 +143,13 @@ export default function Nav() {
                     <Link
                       key={item.title}
                       href={item.url}
-                      onClick={handleLinkClick}
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    className={`flex items-center px-3 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition ${
+                    pathname === item.url ||
+                    (pathname.startsWith(item.url + "/") &&
+                      item.url !== "/dashboard")
+                      ? "text-indigo-600 font-semibold"
+                      : ""
+                  }`}
                     >
                       <Icon size={16} className="mr-3" />
                       {item.title}
@@ -149,36 +157,31 @@ export default function Nav() {
                   );
                 })}
                 <button
-                  onClick={handleLogOut}
-                  className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    onClick={handleLogOut}
+                  className="flex items-center w-full px-4 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-md"
                 >
                   <LogOut size={16} className="mr-3" />
-                  Sign Outss
+                  Log Out
                 </button>
               </div>
             )}
           </div>
         </div>
 
+   
+
+
         {/* Mobile Controls */}
-        <div className="flex items-center md:hidden space-x-4">
           <button
-            onClick={() => setProfileOpen(!profileOpen)}
-            className="text-gray-700 hover:text-indigo-600"
-          >
-            <User size={22} />
-          </button>
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="text-gray-700 hover:text-indigo-600"
+          onClick={() => setMenuOpen(!menuOpen)}
+            className="md:hidden text-gray-700 hover:text-indigo-600"
           >
             {menuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
-        </div>
       </div>
 
       {/* Mobile Menu */}
-      {menuOpen && (
+        {menuOpen && (
         <div className="md:hidden bg-white shadow-lg border-t">
           <div className="flex flex-col px-4 py-3 space-y-1">
             {currentNav.navMain.map((item) => {
@@ -187,11 +190,13 @@ export default function Nav() {
                 <Link
                   key={item.title}
                   href={item.url}
-                  onClick={handleLinkClick}
-                  className={`flex items-center px-3 py-2 rounded-md hover:bg-indigo-50 transition ${
-                    pathname === item.url
-                      ? "text-indigo-600 bg-indigo-50 font-semibold"
-                      : "text-gray-700 hover:text-indigo-600"
+                  onClick={() => setMenuOpen(false)}
+                  className={`flex items-center px-3 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition ${
+                    pathname === item.url ||
+                    (pathname.startsWith(item.url + "/") &&
+                      item.url !== "/dashboard")
+                      ? "text-indigo-600 font-semibold"
+                      : ""
                   }`}
                 >
                   <Icon size={18} className="mr-3" />
@@ -208,35 +213,35 @@ export default function Nav() {
                 <Link
                   key={item.title}
                   href={item.url}
-                  onClick={handleLinkClick}
-                  className="flex items-center px-3 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition"
+                  onClick={() => setMenuOpen(false)}
+                  className={`flex items-center px-3 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition ${
+                    pathname === item.url ||
+                    (pathname.startsWith(item.url + "/") &&
+                      item.url !== "/dashboard")
+                      ? "text-indigo-600 font-semibold"
+                      : ""
+                  }`}
                 >
                   <Icon size={18} className="mr-3" />
                   {item.title}
                 </Link>
               );
             })}
+
+            {/* ✅  mobile logout */}
             <button
-              onClick={handleLinkClick}
-              className="flex items-center px-3 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition text-left"
+                onClick={handleLogOut}
+              className="flex items-center w-full px-3 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition text-left"
             >
               <LogOut size={18} className="mr-3" />
-              Sign Out
+              Log Out
             </button>
           </div>
         </div>
-      )}
 
-      {/* Overlay to close menus */}
-      {(menuOpen || profileOpen) && (
-        <div
-          className="fixed inset-0 z-40 md:hidden"
-          onClick={() => {
-            setMenuOpen(false);
-            setProfileOpen(false);
-          }}
-        />
-      )}
+        )}
+
+    
     </nav>
   );
 }
